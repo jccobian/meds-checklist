@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lista de compras – Medicamentos</title>
+
+  <link rel="icon" type="image/x-icon" href="./logo.ico" />
+
+  <style>
+    :root{
+      --bg0:#07080b;
+      --bg2:#0d0f16;
+
+      --text:#f3f4f7;
+      --muted:#b2b6c2;
+
+      --gold:#d6b35a;
+      --gold2:#f1d38b;
+
+      --line: rgba(255,255,255,0.08);
+      --shadow2: 0 10px 26px rgba(0,0,0,0.40);
+
+      --r:18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+
+    body{
+      margin:0;
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(900px 520px at 20% 0%, rgba(214,179,90,0.15), transparent 58%),
+        radial-gradient(900px 520px at 100% 10%, rgba(214,179,90,0.10), transparent 62%),
+        radial-gradient(1100px 700px at 60% 120%, rgba(241,211,139,0.08), transparent 65%),
+        linear-gradient(180deg, var(--bg0), var(--bg2));
+      padding: 22px;
+      overflow-x:hidden;
+      display:flex;
+      justify-content:center;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background: url("./logo.png") center 28% / 520px auto no-repeat;
+      opacity: 0.035;
+      filter: saturate(1.1) contrast(1.05);
+      transform: translateZ(0);
+    }
+
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
+      opacity: .05;
+      mix-blend-mode: overlay;
+    }
+
+    .page{
+      width:100%;
+      max-width: 1020px;
+      display:flex;
+      flex-direction:column;
+      min-height: calc(100vh - 44px);
+      gap: 16px;
+      position:relative;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding: 16px 16px;
+      border-radius: var(--r);
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      box-shadow: var(--shadow2);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width: 260px;
+    }
+    .brand img{
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      object-fit: contain;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(214,179,90,0.28);
+      box-shadow: 0 12px 22px rgba(0,0,0,0.35);
+      padding: 6px;
+    }
+    .brand .t{display:flex; flex-direction:column; gap:4px;}
+    .brand h1{
+      margin:0;
+      font-size: 15px;
+      letter-spacing: .25px;
+      font-weight: 720;
+    }
+    .pill{
+      width: fit-content;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.25);
+    }
+
+    .controls{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      width:100%;
+    }
+
+    .search{
+      position:relative;
+      min-width: 240px;
+      flex: 1 1 280px;
+      max-width: 460px;
+    }
+    .search input{
+      width:100%;
+      padding: 12px 12px 12px 40px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.28);
+      color: var(--text);
+      outline:none;
+      transition: .18s ease;
+    }
+    .search input:focus{
+      border-color: rgba(214,179,90,0.45);
+      box-shadow: 0 0 0 4px rgba(214,179,90,0.14);
+    }
+    .search .icon{
+      position:absolute;
+      left:12px; top:50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 16px;
+      pointer-events:none;
+    }
+
+    button{
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.22);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      cursor:pointer;
+      transition: .16s ease;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      user-select:none;
+      white-space:nowrap;
+    }
+    button:hover{
+      transform: translateY(-1px);
+      background: rgba(0,0,0,0.30);
+      border-color: rgba(214,179,90,0.28);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.32);
+    }
+    button:active{ transform: translateY(0px); box-shadow:none; }
+
+    .btn-gold{
+      border-color: rgba(214,179,90,0.36);
+      background: linear-gradient(180deg, rgba(214,179,90,0.22), rgba(0,0,0,0.18));
+    }
+    .btn-danger{
+      border-color: rgba(255,77,109,0.35);
+      background: linear-gradient(180deg, rgba(255,77,109,0.16), rgba(0,0,0,0.18));
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.3fr .7fr;
+      gap:16px;
+      align-items:start;
+      flex: 1 1 auto;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns: 1fr}
+    }
+
+    .card{
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      backdrop-filter: blur(12px);
+    }
+
+    .card-head{
+      padding: 14px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.12);
+    }
+    .card-head h2{
+      margin:0;
+      font-size: 13px;
+      letter-spacing: .35px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      font-weight: 760;
+    }
+    .badge{
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.10);
+      color: var(--muted);
+      background: rgba(0,0,0,0.20);
+    }
+    .badge.gold{
+      border-color: rgba(214,179,90,0.30);
+      color: rgba(241,211,139,0.95);
+      background: rgba(214,179,90,0.10);
+    }
+
+    .list{
+      padding: 10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .item{
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.18);
+      transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease, opacity .14s ease;
+      position:relative;
+      overflow:hidden;
+      isolation:isolate;
+    }
+    .item:hover{
+      border-color: rgba(214,179,90,0.22);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(0,0,0,0.30);
+    }
+
+    /* ===== MAGIA DORADA AL MARCAR ===== */
+    .item::after{
+      /* “explosión” dorada suave (se activa con .spark) */
+      content:"";
+      position:absolute;
+      left: var(--sx, 50%);
+      top: var(--sy, 50%);
+      width: 12px;
+      height: 12px;
+      transform: translate(-50%, -50%) scale(0);
+      border-radius: 999px;
+      pointer-events:none;
+      opacity: 0;
+      background:
+        radial-gradient(circle,
+          rgba(241,211,139,0.85) 0%,
+          rgba(214,179,90,0.55) 25%,
+          rgba(214,179,90,0.20) 45%,
+          transparent 65%);
+      filter: blur(0.2px);
+      z-index: 0;
+    }
+
+    .item.spark::after{
+      animation: sparkBurst 650ms ease-out forwards;
+    }
+
+    @keyframes sparkBurst{
+      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.25); }
+      15%  { opacity: 1; transform: translate(-50%, -50%) scale(2.4); }
+      55%  { opacity: 0.9; transform: translate(-50%, -50%) scale(7.6); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(10.5); }
+    }
+
+    /* Chispitas (se crean con JS) */
+    .sparkle{
+      position:absolute;
+      left: 0; top: 0;
+      width: 6px; height: 6px;
+      border-radius: 999px;
+      pointer-events:none;
+      background: radial-gradient(circle, rgba(241,211,139,.95), rgba(214,179,90,.4), transparent 70%);
+      filter: drop-shadow(0 0 8px rgba(214,179,90,.25));
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.6);
+      animation: sparkleFly 650ms ease-out forwards;
+      z-index: 1;
+    }
+    @keyframes sparkleFly{
+      0%   { opacity: 0; transform: translate(var(--x0), var(--y0)) scale(0.6); }
+      15%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--x1), var(--y1)) scale(0.2); }
+    }
+
+    .item.done{
+      opacity: .78;
+      border-color: rgba(214,179,90,0.26);
+    }
+    .item.done::before{
+      content:"";
+      position:absolute;
+      inset:-40px;
+      background: radial-gradient(520px 170px at 10% 10%, rgba(214,179,90,0.10), transparent 60%);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .check{
+      flex:0 0 auto;
+      width: 22px;
+      height: 22px;
+      margin-top: 2px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.20);
+      background: rgba(0,0,0,0.20);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      transition: .16s ease;
+      z-index: 2;
+    }
+    .item.done .check{
+      border-color: rgba(214,179,90,0.55);
+      background: rgba(214,179,90,0.14);
+      box-shadow: 0 0 0 4px rgba(214,179,90,0.12);
+    }
+    .check svg{
+      width: 14px; height: 14px;
+      opacity: 0;
+      transform: scale(.85);
+      transition: .16s ease;
+    }
+    .item.done .check svg{
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .content{
+      flex:1 1 auto;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:0;
+      z-index: 2;
+    }
+    .name{
+      margin:0;
+      font-weight: 740;
+      font-size: 14px;
+      line-height: 1.22;
+      word-break: break-word;
+    }
+    .meta{
+      margin:0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .tags{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:2px;
+      z-index: 2;
+    }
+    .tag{
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.20);
+      color: var(--muted);
+    }
+    .tag.req{ border-color: rgba(214,179,90,0.30); color: rgba(241,211,139,0.95); background: rgba(214,179,90,0.10); }
+    .tag.iv{ border-color: rgba(214,179,90,0.22); color: rgba(214,179,90,0.95); background: rgba(214,179,90,0.07); }
+    .tag.sc{ border-color: rgba(241,211,139,0.22); color: rgba(241,211,139,0.95); background: rgba(241,211,139,0.07); }
+
+    .side{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      position:sticky;
+      top:16px;
+    }
+    @media (max-width: 900px){
+      .side{position:static}
+    }
+
+    .stats{ padding: 16px; display:flex; flex-direction:column; gap:12px; }
+    .row{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-size: 12px; color: var(--muted); }
+
+    .bar{
+      width:100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .bar > div{
+      height:100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(214,179,90,0.95), rgba(241,211,139,0.95));
+      transition: width .22s ease;
+      box-shadow: 0 0 18px rgba(214,179,90,0.22);
+    }
+
+    .tip{
+      padding: 14px 16px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0,0,0,0.10);
+    }
+
+    footer{
+      margin-top: 4px;
+      padding: 14px 10px 6px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      color: rgba(178,182,194,0.92);
+      font-size: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      text-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    }
+    footer .right{ display:flex; gap:10px; align-items:center; justify-content:flex-end; flex-wrap:wrap; }
+    .sep{ width:6px;height:6px;border-radius:999px; background: rgba(214,179,90,0.65); box-shadow: 0 0 0 4px rgba(214,179,90,0.10); }
+    .gold{ color: rgba(241,211,139,0.95); }
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.55);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      padding: 10px 14px;
+      box-shadow: 0 18px 44px rgba(0,0,0,0.55);
+      opacity: 0;
+      pointer-events:none;
+      transition: .18s ease;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      max-width: calc(100% - 24px);
+      backdrop-filter: blur(10px);
+    }
+    .toast.show{ opacity: 1; transform: translateX(-50%) translateY(-6px); }
+    .toast .dot{ width: 10px; height: 10px; border-radius: 999px; background: var(--gold); box-shadow: 0 0 0 4px rgba(214,179,90,0.14); }
+    .toast .tmsg{ font-size: 12px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; color: var(--text); }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <img src="./logo.png" alt="Logo" />
+        <div class="t">
+          <h1>Lista de compras – Medicamentos</h1>
+          <div class="pill">Marca lo encontrado • Se guarda automáticamente</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="search">
+          <span class="icon">🔎</span>
+          <input id="search" type="search" placeholder="Buscar (ej. ‘Ertapenem’, ‘Kabiven’, ‘Eritropoyetina’)..." />
+        </div>
+        <button class="btn-gold" id="btnMarkAll">✅ Marcar todo</button>
+        <button class="btn-danger" id="btnClear">🧼 Limpiar</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <main class="card">
+        <div class="card-head">
+          <h2>🛒 Lista 1 <span class="badge gold" id="countA">0/0</span></h2>
+          <span class="badge">Prioridad</span>
+        </div>
+        <div class="list" id="listA"></div>
+
+        <div class="card-head">
+          <h2>🛒 Lista 2 <span class="badge gold" id="countB">0/0</span></h2>
+          <span class="badge">Resto</span>
+        </div>
+        <div class="list" id="listB"></div>
+      </main>
+
+      <aside class="side">
+        <section class="card">
+          <div class="card-head">
+            <h2>📊 Progreso <span class="badge gold" id="countAll">0/0</span></h2>
+            <span class="badge gold" id="percent">0%</span>
+          </div>
+
+          <div class="stats">
+            <div class="row"><span>Encontrados</span><strong id="foundText">0</strong></div>
+            <div class="bar"><div id="barFill"></div></div>
+            <div class="row"><span>Pendientes</span><strong id="leftText">0</strong></div>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button id="btnCopyRemaining" title="Copia los pendientes al portapapeles">📋 Copiar pendientes</button>
+              <button id="btnCopyAll" title="Copia toda la lista al portapapeles">📋 Copiar todo</button>
+            </div>
+          </div>
+
+          <div class="tip">
+            Tip: da click en el renglón para marcar. Ahora tiene “magia dorada” ✨😄
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <footer>
+      <div>© <span id="year"></span> <span class="gold">Derechos reservados</span></div>
+      <div class="right">
+        <span class="sep"></span>
+        <div>Powered by <strong class="gold">Cobian PC</strong></div>
+      </div>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast">
+    <span class="dot"></span>
+    <span class="tmsg" id="toastMsg">Guardado</span>
+  </div>
+
+  <script>
+    const DATA = {
+      a: [
+        { id:"epo2000",  name:"Eritropoyetina 2000 UI", meta:"Pedir: ‘eritropoyetina 2000 UI’ (ampolleta o jeringa prellenada)", tags:["sc","req"] },
+        { id:"fosfonema",name:"Fosfonema",             meta:"Pedir: ‘Fosfonema’ (confirmar presentación indicada en receta)", tags:["req"] },
+        { id:"renegy500",name:"Renegy 500 ml",         meta:"Pedir: ‘Renegy 500 ml’ (solución intravenosa)", tags:["iv","req"] },
+        { id:"ziplo",    name:"Ziplo",                 meta:"Pedir: ‘Ziplo’ (confirmar presentación indicada en receta)", tags:["req"] }
+      ],
+      b: [
+        { id:"kabiven",  name:"Kabiven (nutrición parenteral)", meta:"Pedir: ‘Kabiven’ (bolsa de nutrición parenteral, según receta)", tags:["iv","req"] },
+        { id:"multiv",   name:"Multivitamínico intravenoso",     meta:"Pedir: ‘multivitamínico IV’ (ampolleta / frasco ámpula)", tags:["iv"] },
+        { id:"vitc",     name:"Vitamina C intravenosa",          meta:"Pedir: ‘vitamina C IV’ (ampolleta)", tags:["iv"] },
+        { id:"ertapenem",name:"Ertapenem 1 g",                   meta:"Pedir: ‘ertapenem 1 g’ (frasco ámpula)", tags:["iv","req"] },
+        { id:"linezolid",name:"Linezolid 600 mg",                meta:"Pedir: ‘linezolid 600 mg’ (tabletas o solución IV, según receta)", tags:["req"] },
+        { id:"zydo",     name:"Zydo (jarabe)",                   meta:"Pedir: ‘Zydo jarabe’ (según receta)", tags:[] }
+      ]
+    };
+
+    const STORAGE_KEY = "meds_checklist_gold_magic_v1";
+    const state = loadState();
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : { checked: {} };
+      }catch(_){
+        return { checked: {} };
+      }
+    }
+    function saveState(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      toast("Guardado ✅");
+    }
+
+    const listA = document.getElementById("listA");
+    const listB = document.getElementById("listB");
+    const search = document.getElementById("search");
+
+    const countA = document.getElementById("countA");
+    const countB = document.getElementById("countB");
+    const countAll = document.getElementById("countAll");
+    const percent = document.getElementById("percent");
+    const barFill = document.getElementById("barFill");
+    const foundText = document.getElementById("foundText");
+    const leftText = document.getElementById("leftText");
+
+    function tagHtml(tag){
+      if(tag === "req") return '<span class="tag req">Receta</span>';
+      if(tag === "iv")  return '<span class="tag iv">IV</span>';
+      if(tag === "sc")  return '<span class="tag sc">Subcutánea</span>';
+      return '';
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function render(){
+      const q = (search.value || "").trim().toLowerCase();
+      listA.innerHTML = "";
+      listB.innerHTML = "";
+
+      const renderList = (items, mount) => {
+        items.forEach(item => {
+          const haystack = (item.name + " " + (item.meta || "")).toLowerCase();
+          if(q && !haystack.includes(q)) return;
+
+          const checked = !!state.checked[item.id];
+          const el = document.createElement("div");
+          el.className = "item" + (checked ? " done" : "");
+          el.setAttribute("data-id", item.id);
+
+          el.innerHTML = `
+            <div class="check" role="checkbox" aria-checked="${checked}" tabindex="0" title="Marcar / desmarcar">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M20 6L9 17l-5-5" stroke="rgba(243,244,247,.95)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="content">
+              <p class="name">${escapeHtml(item.name)}</p>
+              <p class="meta">${escapeHtml(item.meta || "")}</p>
+              <div class="tags">${(item.tags || []).map(tagHtml).join("")}</div>
+            </div>
+          `;
+
+          // Click: togglear + magia
+          el.addEventListener("click", (ev) => {
+            if (window.getSelection && String(window.getSelection()).length > 0) return;
+            const wasChecked = !!state.checked[item.id];
+            toggle(item.id);
+            const nowChecked = !wasChecked;
+            if (nowChecked) magicSpark(el, ev);
+          });
+
+          // Enter / Space: togglear (sin coords exactas)
+          el.addEventListener("keydown", (ev) => {
+            if(ev.key === "Enter" || ev.key === " "){
+              ev.preventDefault();
+              const wasChecked = !!state.checked[item.id];
+              toggle(item.id);
+              const nowChecked = !wasChecked;
+              if (nowChecked) magicSpark(el, null);
+            }
+          });
+
+          mount.appendChild(el);
+        });
+      };
+
+      renderList(DATA.a, listA);
+      renderList(DATA.b, listB);
+
+      updateStats();
+    }
+
+    function toggle(id){
+      state.checked[id] = !state.checked[id];
+      saveState();
+      render();
+    }
+
+    function updateStats(){
+      const all = [...DATA.a, ...DATA.b];
+      const total = all.length;
+      const found = all.filter(x => !!state.checked[x.id]).length;
+
+      const aFound = DATA.a.filter(x => !!state.checked[x.id]).length;
+      const bFound = DATA.b.filter(x => !!state.checked[x.id]).length;
+
+      countA.textContent = `${aFound}/${DATA.a.length}`;
+      countB.textContent = `${bFound}/${DATA.b.length}`;
+      countAll.textContent = `${found}/${total}`;
+
+      const p = total ? Math.round((found/total)*100) : 0;
+      percent.textContent = `${p}%`;
+      barFill.style.width = `${p}%`;
+
+      foundText.textContent = String(found);
+      leftText.textContent = String(total - found);
+    }
+
+    // ====== MAGIA ✨ ======
+    function magicSpark(el, ev){
+      // Coordenadas relativas al elemento
+      const rect = el.getBoundingClientRect();
+      let x = rect.width * 0.22;
+      let y = rect.height * 0.40;
+
+      if (ev && typeof ev.clientX === "number"){
+        x = ev.clientX - rect.left;
+        y = ev.clientY - rect.top;
+      }
+
+      el.style.setProperty("--sx", x + "px");
+      el.style.setProperty("--sy", y + "px");
+
+      // Reiniciar animación de burst
+      el.classList.remove("spark");
+      // Forzar reflow para reiniciar animación
+      void el.offsetWidth;
+      el.classList.add("spark");
+
+      // Chispitas
+      const N = 10;
+      for(let i=0;i<N;i++){
+        const p = document.createElement("span");
+        p.className = "sparkle";
+
+        // random direction
+        const ang = (Math.PI * 2) * (i / N) + (Math.random() * 0.35);
+        const dist = 30 + Math.random() * 55;
+
+        const x0 = `${x}px`;
+        const y0 = `${y}px`;
+        const x1 = `${x + Math.cos(ang)*dist}px`;
+        const y1 = `${y + Math.sin(ang)*dist}px`;
+
+        p.style.setProperty("--x0", x0);
+        p.style.setProperty("--y0", y0);
+        p.style.setProperty("--x1", x1);
+        p.style.setProperty("--y1", y1);
+
+        // tamaño aleatorio
+        const size = 4 + Math.random()*5;
+        p.style.width = size + "px";
+        p.style.height = size + "px";
+
+        el.appendChild(p);
+
+        // limpiar
+        setTimeout(() => p.remove(), 750);
+      }
+
+      // quitar clase para que pueda repetirse
+      setTimeout(() => el.classList.remove("spark"), 750);
+    }
+
+    // ====== Acciones ======
+    document.getElementById("btnClear").addEventListener("click", () => {
+      if(!confirm("¿Seguro que quieres desmarcar todo?")) return;
+      state.checked = {};
+      saveState();
+      render();
+      toast("Lista limpia 🧼");
+    });
+
+    document.getElementById("btnMarkAll").addEventListener("click", () => {
+      [...DATA.a, ...DATA.b].forEach(x => state.checked[x.id] = true);
+      saveState();
+      render();
+      toast("Todo marcado ✅");
+    });
+
+    document.getElementById("btnCopyAll").addEventListener("click", async () => {
+      const text = buildText({ onlyRemaining: false });
+      await copyToClipboard(text);
+      toast("Lista completa copiada 📋");
+    });
+
+    document.getElementById("btnCopyRemaining").addEventListener("click", async () => {
+      const text = buildText({ onlyRemaining: true });
+      await copyToClipboard(text);
+      toast("Pendientes copiados 📋");
+    });
+
+    search.addEventListener("input", render);
+
+    function buildText({ onlyRemaining }){
+      const lines = [];
+      const section = (title, items) => {
+        const arr = onlyRemaining ? items.filter(x => !state.checked[x.id]) : items;
+        if(arr.length === 0) return;
+        lines.push(title);
+        arr.forEach(x => lines.push(`- ${x.name}`));
+        lines.push("");
+      };
+      section("LISTA 1", DATA.a);
+      section("LISTA 2", DATA.b);
+      return lines.join("\n").trim();
+    }
+
+    async function copyToClipboard(text){
+      try{
+        await navigator.clipboard.writeText(text);
+      }catch(_){
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+      }
+    }
+
+    // Toast
+    const toastEl = document.getElementById("toast");
+    const toastMsg = document.getElementById("toastMsg");
+    let toastTimer = null;
+
+    function toast(msg){
+      toastMsg.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1600);
+    }
+
+    // Footer year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    render();
+  </script>
+</body>
+</html>
