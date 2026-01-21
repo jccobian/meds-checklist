@@ -695,11 +695,10 @@
 
   <div class="video-modal" id="videoModal">
     <div class="video-container">
-      <video autoplay controls>
+      <video id="videoElement" autoplay>
         <source src="./video.mp4" type="video/mp4">
         Tu navegador no soporta video HTML5.
       </video>
-      <button class="video-close" onclick="closeVideo()" title="Cerrar video">✕</button>
     </div>
   </div>
 
@@ -961,7 +960,13 @@
 
     function closeVideo(){
       const modal = document.getElementById("videoModal");
-      const video = modal.querySelector("video");
+      const video = document.getElementById("videoElement");
+      
+      // Salir de pantalla completa
+      if(document.fullscreenElement){
+        document.exitFullscreen().catch(() => {});
+      }
+      
       modal.classList.add("fade-out");
       setTimeout(() => {
         modal.style.display = "none";
@@ -969,11 +974,32 @@
       }, 300);
     }
 
-    window.addEventListener("keydown", (e) => {
-      if(e.key === "Escape") closeVideo();
+    // Solicitar pantalla completa al cargar el video
+    const videoElement = document.getElementById("videoElement");
+    const videoModal = document.getElementById("videoModal");
+    
+    videoElement.addEventListener("loadedmetadata", () => {
+      if(videoElement.requestFullscreen){
+        videoElement.requestFullscreen().catch(() => {});
+      }
     });
 
-    document.getElementById("videoModal").addEventListener("click", (e) => {
+    // Cerrar automáticamente cuando termine el video
+    videoElement.addEventListener("ended", () => {
+      setTimeout(closeVideo, 500);
+    });
+
+    // Permitir cerrar con ESC (aunque fullscreen lo hace por defecto)
+    window.addEventListener("keydown", (e) => {
+      if(e.key === "Escape"){
+        if(videoModal.style.display !== "none"){
+          closeVideo();
+        }
+      }
+    });
+
+    // Cerrar al hacer click fuera del video
+    videoModal.addEventListener("click", (e) => {
       if(e.target.id === "videoModal") closeVideo();
     });
 
