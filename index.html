@@ -482,6 +482,15 @@
     .toast .dot{ width: 10px; height: 10px; border-radius: 999px; background: var(--gold); box-shadow: 0 0 0 4px rgba(214,179,90,0.14); }
     .toast .tmsg{ font-size: 12px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; color: var(--text); }
 
+    /* evita scroll y glitches mientras está el video */
+    body.video-lock { overflow: hidden; }
+
+    /* asegura que el modal se vea arriba y centrado */
+    .video-modal { display:flex; }
+
+    /* botón cerrar visible siempre */
+    .video-close { display:flex; }
+
     /* =========================
        Video Modal
        ========================= */
@@ -693,12 +702,20 @@
     <span class="tmsg" id="toastMsg">Guardado</span>
   </div>
 
-  <div class="video-modal" id="videoModal">
+  <div class="video-modal" id="videoModal" aria-hidden="false">
     <div class="video-container">
-      <video id="videoElement" autoplay>
+      <video
+        id="videoElement"
+        autoplay
+        muted
+        playsinline
+        preload="auto"
+      >
         <source src="./video.mp4" type="video/mp4">
         Tu navegador no soporta video HTML5.
       </video>
+
+      <button class="video-close" id="videoClose" title="Cerrar video">✕</button>
     </div>
   </div>
 
@@ -958,50 +975,69 @@
 
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    function closeVideo(){
-      const modal = document.getElementById("videoModal");
-      const video = document.getElementById("videoElement");
-      
-      // Salir de pantalla completa
-      if(document.fullscreenElement){
-        document.exitFullscreen().catch(() => {});
+    // ====== VIDEO INTRO (autoplay) ======
+    const videoModal = document.getElementById("videoModal");
+    const video = document.getElementById("videoElement");
+    const videoClose = document.getElementById("videoClose");
+
+    function showVideo(){
+      if(!videoModal || !video) return;
+      document.body.classList.add("video-lock");
+      videoModal.style.display = "flex";
+      videoModal.classList.remove("fade-out");
+
+      // intenta autoplay (en móvil solo funciona muted)
+      const p = video.play();
+      if(p && typeof p.catch === "function"){
+        p.catch(() => {
+          // si el navegador bloquea autoplay, muestra un tap-to-play
+          // (sin inventar UI compleja: simplemente dejamos controles)
+          video.setAttribute("controls", "controls");
+        });
       }
-      
-      modal.classList.add("fade-out");
-      setTimeout(() => {
-        modal.style.display = "none";
-        video.pause();
-      }, 300);
     }
 
-    // Solicitar pantalla completa al cargar el video
-    const videoElement = document.getElementById("videoElement");
-    const videoModal = document.getElementById("videoModal");
-    
-    videoElement.addEventListener("loadedmetadata", () => {
-      if(videoElement.requestFullscreen){
-        videoElement.requestFullscreen().catch(() => {});
-      }
-    });
+    function closeVideo(){
+      if(!videoModal || !video) return;
 
-    // Cerrar automáticamente cuando termine el video
-    videoElement.addEventListener("ended", () => {
-      setTimeout(closeVideo, 500);
-    });
+      videoModal.classList.add("fade-out");
+      setTimeout(() => {
+        video.pause();
+        video.currentTime = 0;
+        videoModal.style.display = "none";
+        document.body.classList.remove("video-lock");
+      }, 280);
+    }
 
-    // Permitir cerrar con ESC (aunque fullscreen lo hace por defecto)
+    // cerrar al terminar
+    video.addEventListener("ended", closeVideo);
+
+    // cerrar con botón
+    videoClose.addEventListener("click", closeVideo);
+
+    // cerrar con ESC
     window.addEventListener("keydown", (e) => {
-      if(e.key === "Escape"){
-        if(videoModal.style.display !== "none"){
-          closeVideo();
-        }
+      if(e.key === "Escape" && videoModal.style.display !== "none"){
+        closeVideo();
       }
     });
 
-    // Cerrar al hacer click fuera del video
+    // click fuera del video
     videoModal.addEventListener("click", (e) => {
-      if(e.target.id === "videoModal") closeVideo();
+      if(e.target === videoModal) closeVideo();
     });
+
+    // opcional: si el usuario toca el video, intentamos fullscreen (solo si deja)
+    video.addEventListener("click", async () => {
+      try{
+        if(video.requestFullscreen && !document.fullscreenElement){
+          await video.requestFullscreen();
+        }
+      }catch(_){}
+    });
+
+    // arrancar al cargar
+    window.addEventListener("load", showVideo);
 
     render();
   </script>
