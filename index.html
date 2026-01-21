@@ -483,6 +483,65 @@
     .toast .tmsg{ font-size: 12px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; color: var(--text); }
 
     /* =========================
+       Video Modal
+       ========================= */
+    .video-modal{
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      opacity: 1;
+      transition: opacity .3s ease;
+      padding: 20px;
+    }
+    .video-modal.fade-out{
+      opacity: 0;
+      pointer-events: none;
+    }
+    .video-container{
+      position: relative;
+      width: 100%;
+      max-width: 720px;
+      aspect-ratio: 16 / 9;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.60);
+      border: 1px solid rgba(214,179,90,0.22);
+    }
+    .video-container video{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #000;
+    }
+    .video-close{
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.20);
+      background: rgba(0,0,0,0.50);
+      color: var(--text);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: .16s ease;
+      z-index: 10;
+    }
+    .video-close:hover{
+      background: rgba(0,0,0,0.70);
+      border-color: rgba(214,179,90,0.45);
+    }
+
+    /* =========================
        Mobile polish (<= 560px)
        ========================= */
     @media (max-width: 560px){
@@ -632,6 +691,16 @@
   <div class="toast" id="toast">
     <span class="dot"></span>
     <span class="tmsg" id="toastMsg">Guardado</span>
+  </div>
+
+  <div class="video-modal" id="videoModal">
+    <div class="video-container">
+      <video autoplay controls>
+        <source src="./video.mp4" type="video/mp4">
+        Tu navegador no soporta video HTML5.
+      </video>
+      <button class="video-close" onclick="closeVideo()" title="Cerrar video">✕</button>
+    </div>
   </div>
 
   <script>
@@ -889,6 +958,24 @@
     }
 
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    function closeVideo(){
+      const modal = document.getElementById("videoModal");
+      const video = modal.querySelector("video");
+      modal.classList.add("fade-out");
+      setTimeout(() => {
+        modal.style.display = "none";
+        video.pause();
+      }, 300);
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if(e.key === "Escape") closeVideo();
+    });
+
+    document.getElementById("videoModal").addEventListener("click", (e) => {
+      if(e.target.id === "videoModal") closeVideo();
+    });
 
     render();
   </script>
