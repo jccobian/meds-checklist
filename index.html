@@ -268,7 +268,6 @@
 
     /* ===== MAGIA DORADA AL MARCAR ===== */
     .item::after{
-      /* “explosión” dorada suave (se activa con .spark) */
       content:"";
       position:absolute;
       left: var(--sx, 50%);
@@ -300,7 +299,6 @@
       100% { opacity: 0; transform: translate(-50%, -50%) scale(10.5); }
     }
 
-    /* Chispitas (se crean con JS) */
     .sparkle{
       position:absolute;
       left: 0; top: 0;
@@ -483,6 +481,81 @@
     .toast.show{ opacity: 1; transform: translateX(-50%) translateY(-6px); }
     .toast .dot{ width: 10px; height: 10px; border-radius: 999px; background: var(--gold); box-shadow: 0 0 0 4px rgba(214,179,90,0.14); }
     .toast .tmsg{ font-size: 12px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; color: var(--text); }
+
+    /* =========================
+       Mobile polish (<= 560px)
+       ========================= */
+    @media (max-width: 560px){
+      body{ padding: 14px; }
+
+      header{
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 14px;
+      }
+
+      .brand{
+        min-width: 0;
+        width: 100%;
+      }
+      .brand img{
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+      }
+      .brand h1{ font-size: 15px; }
+
+      .controls{
+        width: 100%;
+        justify-content: stretch;
+        gap: 10px;
+      }
+
+      .search{
+        min-width: 0;
+        max-width: none;
+        width: 100%;
+      }
+      .search input{
+        padding: 13px 12px 13px 40px;
+        border-radius: 16px;
+        font-size: 16px; /* evita zoom raro en iOS */
+      }
+
+      .controls button{
+        flex: 1 1 calc(50% - 6px);
+        justify-content: center;
+        padding: 12px 12px;
+        border-radius: 16px;
+      }
+
+      .grid{ grid-template-columns: 1fr; }
+      .side{ position: static; top: auto; }
+
+      .card-head{ padding: 12px 14px; }
+      .list{ padding: 10px; }
+
+      .item{
+        padding: 14px 12px;
+        border-radius: 18px;
+      }
+      .check{
+        width: 26px;
+        height: 26px;
+        border-radius: 10px;
+      }
+      .name{ font-size: 15px; }
+      .meta{ font-size: 12px; }
+
+      footer{
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 8px;
+        padding-bottom: 12px;
+      }
+    }
   </style>
 </head>
 
@@ -579,7 +652,7 @@
       ]
     };
 
-    const STORAGE_KEY = "meds_checklist_gold_magic_v1";
+    const STORAGE_KEY = "meds_checklist_gold_magic_v2";
     const state = loadState();
 
     function loadState(){
@@ -651,7 +724,6 @@
             </div>
           `;
 
-          // Click: togglear + magia
           el.addEventListener("click", (ev) => {
             if (window.getSelection && String(window.getSelection()).length > 0) return;
             const wasChecked = !!state.checked[item.id];
@@ -660,7 +732,6 @@
             if (nowChecked) magicSpark(el, ev);
           });
 
-          // Enter / Space: togglear (sin coords exactas)
           el.addEventListener("keydown", (ev) => {
             if(ev.key === "Enter" || ev.key === " "){
               ev.preventDefault();
@@ -707,9 +778,7 @@
       leftText.textContent = String(total - found);
     }
 
-    // ====== MAGIA ✨ ======
     function magicSpark(el, ev){
-      // Coordenadas relativas al elemento
       const rect = el.getBoundingClientRect();
       let x = rect.width * 0.22;
       let y = rect.height * 0.40;
@@ -722,48 +791,34 @@
       el.style.setProperty("--sx", x + "px");
       el.style.setProperty("--sy", y + "px");
 
-      // Reiniciar animación de burst
       el.classList.remove("spark");
-      // Forzar reflow para reiniciar animación
       void el.offsetWidth;
       el.classList.add("spark");
 
-      // Chispitas
       const N = 10;
       for(let i=0;i<N;i++){
         const p = document.createElement("span");
         p.className = "sparkle";
 
-        // random direction
         const ang = (Math.PI * 2) * (i / N) + (Math.random() * 0.35);
         const dist = 30 + Math.random() * 55;
 
-        const x0 = `${x}px`;
-        const y0 = `${y}px`;
-        const x1 = `${x + Math.cos(ang)*dist}px`;
-        const y1 = `${y + Math.sin(ang)*dist}px`;
+        p.style.setProperty("--x0", `${x}px`);
+        p.style.setProperty("--y0", `${y}px`);
+        p.style.setProperty("--x1", `${x + Math.cos(ang)*dist}px`);
+        p.style.setProperty("--y1", `${y + Math.sin(ang)*dist}px`);
 
-        p.style.setProperty("--x0", x0);
-        p.style.setProperty("--y0", y0);
-        p.style.setProperty("--x1", x1);
-        p.style.setProperty("--y1", y1);
-
-        // tamaño aleatorio
         const size = 4 + Math.random()*5;
         p.style.width = size + "px";
         p.style.height = size + "px";
 
         el.appendChild(p);
-
-        // limpiar
         setTimeout(() => p.remove(), 750);
       }
 
-      // quitar clase para que pueda repetirse
       setTimeout(() => el.classList.remove("spark"), 750);
     }
 
-    // ====== Acciones ======
     document.getElementById("btnClear").addEventListener("click", () => {
       if(!confirm("¿Seguro que quieres desmarcar todo?")) return;
       state.checked = {};
@@ -820,7 +875,6 @@
       }
     }
 
-    // Toast
     const toastEl = document.getElementById("toast");
     const toastMsg = document.getElementById("toastMsg");
     let toastTimer = null;
@@ -832,7 +886,6 @@
       toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1600);
     }
 
-    // Footer year
     document.getElementById("year").textContent = new Date().getFullYear();
 
     render();
