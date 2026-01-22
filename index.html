@@ -352,29 +352,6 @@
       line-height: 1.2;
     }
 
-    /* ===== Semana completa visible / scroll bien ===== */
-    table.weekview{
-      width: max-content;     /* clave: deja que la tabla mida lo que necesita */
-      min-width: 1200px;      /* asegura Domingo visible */
-      border-collapse: collapse;
-    }
-
-    /* fija la primera columna (Bloque) */
-    table.weekview th.sticky-col,
-    table.weekview td.sticky-col{
-      position: sticky;
-      left: 0;
-      z-index: 5;
-      background: rgba(0,0,0,0.28);
-      backdrop-filter: blur(6px);
-    }
-
-    /* columnas del resto: consistentes */
-    table.weekview th:not(.sticky-col),
-    table.weekview td:not(.sticky-col){
-      min-width: 150px;       /* cada día ancho fijo -> no se corta */
-    }
-
     /* resalta el día actual */
     th.is-today{
       outline: 2px solid rgba(214,179,90,0.35);
@@ -414,11 +391,6 @@
       margin-right: calc(50% - 50vw);
       padding-left: 22px;
       padding-right: 22px;
-    }
-
-    .table-wrap{
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
     }
 
     /* tabla ancha real, no "encogida" */
@@ -514,18 +486,6 @@
         gap:10px;
         align-items:flex-start;
         padding: 6px 0;
-      }
-
-      .wkmark{
-        display:inline-block;
-        min-width: 18px;
-        text-align:center;
-        font-weight: 900;
-        color: var(--gold2);
-        border: 1px solid rgba(214,179,90,0.22);
-        border-radius: 6px;
-        padding: 2px 6px;
-        user-select:none;
       }
 
       .mtext{ font-size: 14px; line-height: 1.2; }
