@@ -604,6 +604,10 @@
               </div>
             </div>
 
+            <!-- checkboxes invisibles para guardar EPO por día (M-V) -->
+            <input type="checkbox" data-key="epo_wed" style="display:none" />
+            <input type="checkbox" data-key="epo_fri" style="display:none" />
+
           </div>
         </div>
 
@@ -751,9 +755,19 @@
 
     function clearAll(){
       if(!confirm("¿Seguro que quieres limpiar todas las marcas?")) return;
-      state.checked = {};
+      
+      // Limpia rutina diaria, pero respeta EPO (como enforceWeeklyReset)
+      const nextChecked = {};
+      for(const [k,v] of Object.entries(state.checked || {})){
+        if(k.startsWith("epo_")) nextChecked[k] = v;
+      }
+      state.checked = nextChecked;
+      
       saveState();
-      document.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb => cb.checked = false);
+      document.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb => {
+        const k = cb.getAttribute("data-key");
+        cb.checked = !!state.checked[k];
+      });
       renderWeekMirror();
     }
     window.clearAll = clearAll;
@@ -830,22 +844,27 @@
         }
       }
 
-      // pinta marks: SOLO HOY refleja rutina, otros días quedan apagados
+      // pinta marks: Rutina SOLO HOY, EPO por su día real
       document.querySelectorAll('.wkmark[data-day][data-key]').forEach(el => {
         const day = el.getAttribute("data-day");
         const key = el.getAttribute("data-key");
         const isToday = (day === today);
-
-        el.classList.toggle("offday", !isToday);
-
-        // Eritropoyetina: se guarda real por clave (epo_mon/epo_wed/epo_fri)
-        // Rutina: SOLO hoy toma el estado
+        const isEpo = key.startsWith("epo_");
         const checked = !!state.checked[key];
 
-        if(isToday){
+        if (isEpo) {
+          // EPO: se refleja por día real (columna), no "solo HOY"
           el.textContent = checked ? "✅" : "☐";
-        }else{
-          el.textContent = "☐";
+          el.classList.toggle("offday", false);
+        } else {
+          // Rutina: SOLO HOY refleja el estado
+          if (isToday) {
+            el.textContent = checked ? "✅" : "☐";
+            el.classList.toggle("offday", false);
+          } else {
+            el.textContent = "☐";
+            el.classList.toggle("offday", true);
+          }
         }
       });
 
