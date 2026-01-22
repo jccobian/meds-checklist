@@ -274,160 +274,105 @@
       line-height: 1.25;
     }
 
-    /* ===== SEMANA ===== */
-    .weekly{
-      padding: 14px;
-    }
-
-    /* full-bleed para que SIEMPRE se vea completa en desktop */
-    .weekly.full-bleed{
-      width: 100vw;
-      margin-left: calc(50% - 50vw);
-      margin-right: calc(50% - 50vw);
-      padding-left: 22px;
-      padding-right: 22px;
-      padding-top: 14px;
-      padding-bottom: 14px;
-    }
+    /* ===== SEMANA (MATRIZ COMPACTA) ===== */
+    .weekly{ padding: 14px; }
 
     .table-wrap{
-      overflow-x: auto;
+      overflow-x:auto;
       -webkit-overflow-scrolling: touch;
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.14);
     }
 
-    table.weekview{
-      width: max-content;
-      min-width: 1280px;  /* obliga a que existan 7 días completos */
-      border-collapse:collapse;
+    table.week-matrix{
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed; /* clave: columnas fijas */
+      min-width: 720px;    /* móvil podrá scrollear */
     }
 
-    .weekview th, .weekview td{
+    .week-matrix th, .week-matrix td{
       border-bottom: 1px solid rgba(255,255,255,0.10);
       border-right: 1px solid rgba(255,255,255,0.08);
-      padding: 12px 10px;
-      vertical-align:top;
+      padding: 10px 10px;
+      vertical-align: middle;
     }
-    .weekview th:last-child, .weekview td:last-child{ border-right:none; }
 
-    .weekview th{
-      text-align:left;
-      font-size: 14px;
+    .week-matrix th:last-child, .week-matrix td:last-child{ border-right:none; }
+
+    .week-matrix th{
+      text-align:center;
+      font-size: 13px;
       color: rgba(241,211,139,0.95);
       background: rgba(214,179,90,0.08);
       letter-spacing: .2px;
       white-space:nowrap;
     }
 
-    .weekview th:not(.sticky-col),
-    .weekview td:not(.sticky-col){
-      min-width: 170px;
-    }
-
-    .weekview th.sticky-col,
-    .weekview td.sticky-col{
+    .week-matrix th.sticky-col,
+    .week-matrix td.sticky-col{
       position: sticky;
       left: 0;
       z-index: 5;
+      text-align:left;
       background: rgba(0,0,0,0.28);
       backdrop-filter: blur(6px);
-      min-width: 160px;
     }
 
-    .mini{
-      display:flex;
-      flex-direction:column;
-      gap: 8px;
-    }
-    .mrow{
-      display:flex;
-      gap: 8px;
-      align-items:flex-start;
-    }
-    .wkmark{
-      display:inline-block;
-      min-width: 18px;
+    .week-matrix th.sticky-col{ width: 320px; }
+    .week-matrix th:not(.sticky-col){ width: calc((100% - 320px)/7); }
+
+    .week-matrix td{
+      font-size: 14px;
+      color: var(--text);
       text-align:center;
+    }
+
+    .week-matrix td.sticky-col{
+      text-align:left;
+      font-weight: 800;
+    }
+
+    .week-matrix tr.group td{
+      text-align:left;
+      font-weight: 900;
+      letter-spacing: .2px;
+      color: rgba(241,211,139,0.95);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .wkmark{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 24px;
+      height: 24px;
       font-weight: 900;
       color: var(--gold2);
       border: 1px solid rgba(214,179,90,0.22);
-      border-radius: 6px;
-      padding: 2px 6px;
+      border-radius: 8px;
       user-select:none;
     }
-    .mtext{ line-height: 1.2; font-size: 14px; }
 
-    /* resaltar la columna del día actual en desktop */
-    .weekview th.is-today{
+    .wkmark.offday{
+      opacity: .28; /* días que NO son hoy */
+    }
+
+    .week-matrix th.is-today{
       outline: 2px solid rgba(214,179,90,0.35);
       outline-offset: -2px;
     }
-    .weekview td.is-today{
-      background: rgba(214,179,90,0.05);
+
+    .week-matrix td.is-today{
+      background: rgba(214,179,90,0.06);
     }
 
-    /* ===== MÓVIL: semana como tarjetas (sin tabla horizontal) ===== */
-    .week-cards{ display:none; }
-
+    /* móvil: header y celdas más compactas */
     @media (max-width: 820px){
       body{ padding: 14px; }
-      .weekly.full-bleed{
-        padding-left: 14px;
-        padding-right: 14px;
-      }
-      .table-wrap{ display:none; }
-
-      .week-cards{
-        display:grid;
-        grid-template-columns: 1fr;
-        gap: 12px;
-        margin-top: 12px;
-      }
-      .day-card{
-        border: 1px solid rgba(255,255,255,0.10);
-        border-radius: 16px;
-        background: rgba(0,0,0,0.18);
-        padding: 12px;
-      }
-      .day-card .dh{
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        gap:10px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid rgba(255,255,255,0.10);
-        margin-bottom: 10px;
-      }
-      .day-card .dh strong{
-        font-size: 16px;
-        letter-spacing: .2px;
-      }
-      .day-card .today-pill{
-        font-size: 12px;
-        padding: 6px 10px;
-        border-radius: 999px;
-        border: 1px solid rgba(214,179,90,0.30);
-        color: rgba(241,211,139,0.95);
-        background: rgba(214,179,90,0.10);
-        display:none;
-      }
-      .day-card.is-today .today-pill{ display:inline-block; }
-      .day-card .sec{ margin-top: 10px; }
-      .day-card .sec-title{
-        font-weight: 850;
-        color: rgba(241,211,139,0.95);
-        margin-bottom: 8px;
-        font-size: 14px;
-      }
-      .day-card .mrow{
-        display:flex;
-        gap:10px;
-        align-items:flex-start;
-        padding: 6px 0;
-      }
-      .day-card .mtext{ font-size: 14px; }
+      .week-matrix th.sticky-col{ width: 240px; }
+      table.week-matrix{ min-width: 620px; }
     }
 
     footer{
@@ -665,82 +610,33 @@
       </div>
     </section>
 
-    <!-- SEMANA (ESPEJO AUTOMÁTICO) -->
+    <!-- SEMANA (MATRIZ COMPACTA) -->
     <section class="card">
       <div class="card-head">
         <h2>📅 Semana (vista automática)</h2>
-        <span class="badge">Marcas arriba → aquí solo se refleja HOY ✅</span>
+        <span class="badge">Marcas arriba → abajo solo refleja HOY ✅</span>
       </div>
 
-      <div class="weekly full-bleed">
-
-        <!-- DESKTOP / IMPRESIÓN -->
-        <div class="table-wrap">
-          <table class="weekview" id="weekTable">
+      <div class="weekly">
+        <div class="table-wrap" id="weekWrap">
+          <table class="week-matrix" id="weekMatrix">
             <thead>
               <tr>
-                <th class="sticky-col">Bloque</th>
-                <th data-day="mon">Lunes</th>
-                <th data-day="tue">Martes</th>
-                <th data-day="wed">Miércoles</th>
-                <th data-day="thu">Jueves</th>
-                <th data-day="fri">Viernes</th>
-                <th data-day="sat">Sábado</th>
-                <th data-day="sun">Domingo</th>
+                <th class="sticky-col">Medicamento</th>
+                <th data-day="mon">L</th>
+                <th data-day="tue">M</th>
+                <th data-day="wed">X</th>
+                <th data-day="thu">J</th>
+                <th data-day="fri">V</th>
+                <th data-day="sat">S</th>
+                <th data-day="sun">D</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td class="sticky-col"><strong>Mañana</strong><br><span style="color:var(--muted);font-size:13px;">Rutina</span></td>
-                <td><div class="mini" data-day="mon" data-block="morning"></div></td>
-                <td><div class="mini" data-day="tue" data-block="morning"></div></td>
-                <td><div class="mini" data-day="wed" data-block="morning"></div></td>
-                <td><div class="mini" data-day="thu" data-block="morning"></div></td>
-                <td><div class="mini" data-day="fri" data-block="morning"></div></td>
-                <td><div class="mini" data-day="sat" data-block="morning"></div></td>
-                <td><div class="mini" data-day="sun" data-block="morning"></div></td>
-              </tr>
-
-              <tr>
-                <td class="sticky-col"><strong>Tarde</strong><br><span style="color:var(--muted);font-size:13px;">Rutina</span></td>
-                <td><div class="mini" data-day="mon" data-block="afternoon"></div></td>
-                <td><div class="mini" data-day="tue" data-block="afternoon"></div></td>
-                <td><div class="mini" data-day="wed" data-block="afternoon"></div></td>
-                <td><div class="mini" data-day="thu" data-block="afternoon"></div></td>
-                <td><div class="mini" data-day="fri" data-block="afternoon"></div></td>
-                <td><div class="mini" data-day="sat" data-block="afternoon"></div></td>
-                <td><div class="mini" data-day="sun" data-block="afternoon"></div></td>
-              </tr>
-
-              <tr>
-                <td class="sticky-col"><strong>Noche</strong><br><span style="color:var(--muted);font-size:13px;">Rutina</span></td>
-                <td><div class="mini" data-day="mon" data-block="night"></div></td>
-                <td><div class="mini" data-day="tue" data-block="night"></div></td>
-                <td><div class="mini" data-day="wed" data-block="night"></div></td>
-                <td><div class="mini" data-day="thu" data-block="night"></div></td>
-                <td><div class="mini" data-day="fri" data-block="night"></div></td>
-                <td><div class="mini" data-day="sat" data-block="night"></div></td>
-                <td><div class="mini" data-day="sun" data-block="night"></div></td>
-              </tr>
-
-              <!-- Eritropoyetina semanal real (L-M-V) -->
-              <tr>
-                <td class="sticky-col"><strong>Eritropoyetina</strong><br><span style="color:var(--muted);font-size:13px;">L-M-V</span></td>
-                <td><div class="mrow"><span class="wkmark" data-key="epo_mon">☐</span><div class="mtext">Aplicada</div></div></td>
-                <td><div class="mrow"><span class="wkmark">—</span><div class="mtext">No aplica</div></div></td>
-                <td><div class="mrow"><span class="wkmark" data-key="epo_wed">☐</span><div class="mtext">Aplicada</div></div></td>
-                <td><div class="mrow"><span class="wkmark">—</span><div class="mtext">No aplica</div></div></td>
-                <td><div class="mrow"><span class="wkmark" data-key="epo_fri">☐</span><div class="mtext">Aplicada</div></div></td>
-                <td><div class="mrow"><span class="wkmark">—</span><div class="mtext">No aplica</div></div></td>
-                <td><div class="mrow"><span class="wkmark">—</span><div class="mtext">No aplica</div></div></td>
-              </tr>
+            <tbody id="weekBody">
+              <!-- JS construye filas -->
             </tbody>
           </table>
         </div>
-
-        <!-- MÓVIL -->
-        <div class="week-cards" id="weekCards"></div>
-
       </div>
     </section>
 
@@ -863,48 +759,70 @@
     window.clearAll = clearAll;
 
     // =========================
-    // SEMANA: ESPEJO SOLO HOY
+    // SEMANA: MATRIZ COMPACTA
     // =========================
+    const WEEK_MATRIX = [
+      { group: "🌤️ Mañana", items: ROUTINE_MAP.morning },
+      { group: "🌇 Tarde",  items: ROUTINE_MAP.afternoon },
+      { group: "🌙 Noche",  items: ROUTINE_MAP.night },
+      { group: "💉 Eritropoyetina (L-M-V)", items: [
+          { key:"epo_mon", label:"Eritropoyetina (Lunes)" },
+          { key:"epo_wed", label:"Eritropoyetina (Miércoles)" },
+          { key:"epo_fri", label:"Eritropoyetina (Viernes)" },
+        ]
+      }
+    ];
+
+    function buildWeekMatrix(){
+      const tbody = document.getElementById("weekBody");
+      if(!tbody) return;
+
+      const days = ["mon","tue","wed","thu","fri","sat","sun"];
+      tbody.innerHTML = "";
+
+      WEEK_MATRIX.forEach(block => {
+        // fila separadora de grupo
+        const trg = document.createElement("tr");
+        trg.className = "group";
+        trg.innerHTML = `<td class="sticky-col" colspan="8">${block.group}</td>`;
+        tbody.appendChild(trg);
+
+        // filas de items
+        (block.items || []).forEach(it => {
+          const tr = document.createElement("tr");
+
+          const left = document.createElement("td");
+          left.className = "sticky-col";
+          left.textContent = it.label;
+          tr.appendChild(left);
+
+          days.forEach(d => {
+            const td = document.createElement("td");
+            td.setAttribute("data-day", d);
+            td.innerHTML = `<span class="wkmark" data-day="${d}" data-key="${it.key}">☐</span>`;
+            tr.appendChild(td);
+          });
+
+          tbody.appendChild(tr);
+        });
+      });
+    }
+
     function renderWeekMirror(){
       const today = getTodayDayKey();
       const days = ["mon","tue","wed","thu","fri","sat","sun"];
 
-      // 1) Desktop tabla: llenar cada mini (día/bloque)
-      document.querySelectorAll(".mini[data-day][data-block]").forEach(container => {
-        const day = container.getAttribute("data-day");
-        const block = container.getAttribute("data-block");
-        const items = ROUTINE_MAP[block] || [];
-        const isToday = (day === today);
-
-        container.innerHTML = "";
-        items.forEach(it => {
-          const done = isToday ? !!state.checked[it.key] : false;
-          const row = document.createElement("div");
-          row.className = "mrow";
-          row.innerHTML = `<span class="wkmark">${done ? "✅" : "☐"}</span><div class="mtext">${it.label}</div>`;
-          container.appendChild(row);
-        });
-      });
-
-      // 2) Eritropoyetina (epo_*) reflejo real por día
-      document.querySelectorAll(".wkmark[data-key]").forEach(span => {
-        const k = span.getAttribute("data-key");
-        span.textContent = state.checked[k] ? "✅" : "☐";
-      });
-
-      // 3) Resaltar columna HOY en tabla
-      const table = document.getElementById("weekTable");
+      // resalta columna hoy
+      const table = document.getElementById("weekMatrix");
       if(table){
-        // limpia
         table.querySelectorAll("thead th").forEach(th => th.classList.remove("is-today"));
         table.querySelectorAll("tbody td").forEach(td => td.classList.remove("is-today"));
 
-        const idx = days.indexOf(today); // 0..6
+        const idx = days.indexOf(today);
         if(idx >= 0){
-          const col = idx + 2; // +1 por "Bloque"
+          const col = idx + 2; // +1 por sticky
           const thToday = table.querySelector(`thead th:nth-child(${col})`);
           if(thToday) thToday.classList.add("is-today");
-
           table.querySelectorAll("tbody tr").forEach(tr => {
             const td = tr.querySelector(`td:nth-child(${col})`);
             if(td) td.classList.add("is-today");
@@ -912,62 +830,28 @@
         }
       }
 
-      // 4) Móvil tarjetas
-      renderWeekCards(today, days);
-    }
-
-    function renderWeekCards(today, days){
-      const mount = document.getElementById("weekCards");
-      if(!mount) return;
-
-      mount.innerHTML = "";
-      days.forEach(day => {
+      // pinta marks: SOLO HOY refleja rutina, otros días quedan apagados
+      document.querySelectorAll('.wkmark[data-day][data-key]').forEach(el => {
+        const day = el.getAttribute("data-day");
+        const key = el.getAttribute("data-key");
         const isToday = (day === today);
 
-        const card = document.createElement("div");
-        card.className = "day-card" + (isToday ? " is-today" : "");
+        el.classList.toggle("offday", !isToday);
 
-        card.innerHTML = `
-          <div class="dh">
-            <strong>${DAY_LABELS[day]}</strong>
-            <span class="today-pill">HOY</span>
-          </div>
+        // Eritropoyetina: se guarda real por clave (epo_mon/epo_wed/epo_fri)
+        // Rutina: SOLO hoy toma el estado
+        const checked = !!state.checked[key];
 
-          <div class="sec">
-            <div class="sec-title">Mañana</div>
-            <div class="mini" data-card-day="${day}" data-card-block="morning"></div>
-          </div>
-
-          <div class="sec">
-            <div class="sec-title">Tarde</div>
-            <div class="mini" data-card-day="${day}" data-card-block="afternoon"></div>
-          </div>
-
-          <div class="sec">
-            <div class="sec-title">Noche</div>
-            <div class="mini" data-card-day="${day}" data-card-block="night"></div>
-          </div>
-        `;
-
-        mount.appendChild(card);
+        if(isToday){
+          el.textContent = checked ? "✅" : "☐";
+        }else{
+          el.textContent = "☐";
+        }
       });
 
-      // llenar contenido (solo hoy ✅)
-      document.querySelectorAll('.mini[data-card-day][data-card-block]').forEach(container => {
-        const day = container.getAttribute("data-card-day");
-        const block = container.getAttribute("data-card-block");
-        const items = ROUTINE_MAP[block] || [];
-        const isToday = (day === today);
-
-        container.innerHTML = "";
-        items.forEach(it => {
-          const done = isToday ? !!state.checked[it.key] : false;
-          const row = document.createElement("div");
-          row.className = "mrow";
-          row.innerHTML = `<span class="wkmark">${done ? "✅" : "☐"}</span><div class="mtext">${it.label}</div>`;
-          container.appendChild(row);
-        });
-      });
+      // evita que el scroll quede "en sábado/domingo" como en tu captura
+      const wrap = document.getElementById("weekWrap");
+      if(wrap) wrap.scrollLeft = 0;
     }
 
     // =========================
@@ -981,6 +865,7 @@
     document.getElementById("todayBadge").textContent = `Hoy: ${todayName} • ${getISOWeekStamp()}`;
 
     bindChecks();
+    buildWeekMatrix();
     renderWeekMirror();
   </script>
 </body>
