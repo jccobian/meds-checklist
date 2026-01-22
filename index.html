@@ -346,6 +346,48 @@
       line-height: 1.2;
     }
 
+    /* ===== Semana completa visible / scroll bien ===== */
+    table.weekview{
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed; /* clave: reparte columnas */
+      min-width: 1100px;   /* asegura 7 días sin apretar feo */
+    }
+
+    table.weekview th, table.weekview td{
+      width: calc((100% - 160px)/7);
+    }
+
+    table.weekview th.sticky-col,
+    table.weekview td.sticky-col{
+      position: sticky;
+      left: 0;
+      z-index: 3;
+      background: rgba(0,0,0,0.22);
+      backdrop-filter: blur(6px);
+    }
+
+    /* marca semanal solo lectura */
+    .wkmark{
+      display:inline-block;
+      min-width: 18px;
+      text-align:center;
+      font-weight: 900;
+      color: var(--gold2);
+      border: 1px solid rgba(214,179,90,0.22);
+      border-radius: 6px;
+      padding: 2px 6px;
+      user-select:none;
+    }
+    .wkmark.disabled{
+      opacity:.35;
+      border-color: rgba(255,255,255,0.10);
+      color: var(--muted);
+    }
+
+    /* compacta los textos dentro de celdas */
+    table.weekview .mtext{ font-size: 13px; }
+
     footer{
       margin-top: 4px;
       padding: 14px 10px 10px;
@@ -578,19 +620,19 @@
       </div>
     </section>
 
-    <!-- CALENDARIO SEMANAL -->
+    <!-- CALENDARIO SEMANAL (VISTA) -->
     <section class="card">
       <div class="card-head">
-        <h2>🗓️ Calendario semanal (marcar dosis especiales)</h2>
-        <span class="badge">Recomendado para: Eritropoyetina (L-M-V) y control</span>
+        <h2>🗓️ Semana (vista automática)</h2>
+        <span class="badge">Marcas arriba → aquí solo se refleja ✅</span>
       </div>
 
       <div class="weekly">
         <div class="table-wrap">
-          <table>
+          <table class="weekview">
             <thead>
               <tr>
-                <th style="width:140px;">Bloque</th>
+                <th class="sticky-col" style="width:160px;">Bloque</th>
                 <th>Lunes</th>
                 <th>Martes</th>
                 <th>Miércoles</th>
@@ -600,95 +642,70 @@
                 <th>Domingo</th>
               </tr>
             </thead>
+
             <tbody>
+              <!-- MAÑANA -->
               <tr>
-                <td>
+                <td class="sticky-col">
                   <div class="cell-title">Mañana</div>
                   <div style="color:var(--muted); font-size:13px;">Rutina</div>
                 </td>
-                <td colspan="7">
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="wk_amiodarona" /><div class="mtext">Amiodarona (½)</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_rivaroxaban" /><div class="mtext">Rivaroxaban 15mg (½)</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_acido_folico" /><div class="mtext">Ácido fólico</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_zyplo_am" /><div class="mtext">Zyplo 10 ml (c/8h)</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_linezolid_am" /><div class="mtext">Linezolid (1) (c/12h)</div></div>
-                  </div>
-                </td>
+
+                <!-- Cada día tiene solo "palomitas" automáticas -->
+                <td><div class="mini" data-day="mon" data-block="morning"></div></td>
+                <td><div class="mini" data-day="tue" data-block="morning"></div></td>
+                <td><div class="mini" data-day="wed" data-block="morning"></div></td>
+                <td><div class="mini" data-day="thu" data-block="morning"></div></td>
+                <td><div class="mini" data-day="fri" data-block="morning"></div></td>
+                <td><div class="mini" data-day="sat" data-block="morning"></div></td>
+                <td><div class="mini" data-day="sun" data-block="morning"></div></td>
               </tr>
 
+              <!-- TARDE -->
               <tr>
-                <td>
+                <td class="sticky-col">
                   <div class="cell-title">Tarde</div>
                   <div style="color:var(--muted); font-size:13px;">Rutina</div>
                 </td>
-                <td colspan="7">
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="wk_omeprazol" /><div class="mtext">Omeprazol</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_ziplo_5pm" /><div class="mtext">Ziplo 10 ml (5:00 pm)</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_inhalador_6pm" /><div class="mtext">Inhalador (6:00 pm)</div></div>
-                  </div>
-                </td>
+                <td><div class="mini" data-day="mon" data-block="afternoon"></div></td>
+                <td><div class="mini" data-day="tue" data-block="afternoon"></div></td>
+                <td><div class="mini" data-day="wed" data-block="afternoon"></div></td>
+                <td><div class="mini" data-day="thu" data-block="afternoon"></div></td>
+                <td><div class="mini" data-day="fri" data-block="afternoon"></div></td>
+                <td><div class="mini" data-day="sat" data-block="afternoon"></div></td>
+                <td><div class="mini" data-day="sun" data-block="afternoon"></div></td>
               </tr>
 
+              <!-- NOCHE -->
               <tr>
-                <td>
+                <td class="sticky-col">
                   <div class="cell-title">Noche</div>
                   <div style="color:var(--muted); font-size:13px;">Rutina</div>
                 </td>
-                <td colspan="7">
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="wk_insulina" /><div class="mtext">Insulina</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_sulfato" /><div class="mtext">Sulfato ferroso</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_zyplo_night" /><div class="mtext">Zyplo (c/8h)</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_linezolid_night" /><div class="mtext">Linezolid (1) después de cenar</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_ertapenem" /><div class="mtext">Ertapenem IV</div></div>
-                  </div>
-                </td>
+                <td><div class="mini" data-day="mon" data-block="night"></div></td>
+                <td><div class="mini" data-day="tue" data-block="night"></div></td>
+                <td><div class="mini" data-day="wed" data-block="night"></div></td>
+                <td><div class="mini" data-day="thu" data-block="night"></div></td>
+                <td><div class="mini" data-day="fri" data-block="night"></div></td>
+                <td><div class="mini" data-day="sat" data-block="night"></div></td>
+                <td><div class="mini" data-day="sun" data-block="night"></div></td>
               </tr>
 
+              <!-- ERITROPOYETINA (solo L-M-V idealmente, pero tú puedes ver toda semana) -->
               <tr>
-                <td>
+                <td class="sticky-col">
                   <div class="cell-title">Eritropoyetina</div>
                   <div style="color:var(--muted); font-size:13px;">L-M-V</div>
                 </td>
-                <td>
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="epo_mon" /><div class="mtext">Aplicada</div></div>
-                  </div>
-                </td>
-                <td>
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="epo_tue" /><div class="mtext">—</div></div>
-                  </div>
-                </td>
-                <td>
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="epo_wed" /><div class="mtext">Aplicada</div></div>
-                  </div>
-                </td>
-                <td>
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="epo_thu" /><div class="mtext">—</div></div>
-                  </div>
-                </td>
-                <td>
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="epo_fri" /><div class="mtext">Aplicada</div></div>
-                  </div>
-                </td>
-                <td>
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="epo_sat" /><div class="mtext">—</div></div>
-                  </div>
-                </td>
-                <td>
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="epo_sun" /><div class="mtext">—</div></div>
-                  </div>
-                </td>
-              </tr>
 
+                <td><div class="mini"><div class="mrow"><span class="wkmark" data-key="epo_mon">☐</span><div class="mtext">Aplicada</div></div></div></td>
+                <td><div class="mini"><div class="mrow"><span class="wkmark disabled">—</span><div class="mtext">—</div></div></div></td>
+                <td><div class="mini"><div class="mrow"><span class="wkmark" data-key="epo_wed">☐</span><div class="mtext">Aplicada</div></div></div></td>
+                <td><div class="mini"><div class="mrow"><span class="wkmark disabled">—</span><div class="mtext">—</div></div></div></td>
+                <td><div class="mini"><div class="mrow"><span class="wkmark" data-key="epo_fri">☐</span><div class="mtext">Aplicada</div></div></div></td>
+                <td><div class="mini"><div class="mrow"><span class="wkmark disabled">—</span><div class="mtext">—</div></div></div></td>
+                <td><div class="mini"><div class="mrow"><span class="wkmark disabled">—</span><div class="mtext">—</div></div></div></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -706,16 +723,12 @@
 
   <script>
     // =========================
-    // CONFIG
+    // STORAGE + RESET (diario y semanal)
     // =========================
-    const STORAGE_KEY = "meds_calendar_letter_v2"; // v2 para no romper tu storage viejo
+    const STORAGE_KEY = "meds_calendar_letter_v3";
 
-    // Prefijos para detectar semanal vs diario
-    const WEEKLY_PREFIXES = ["wk_", "epo_"];
+    const WEEKLY_PREFIXES = ["epo_"]; // semanal real: epo_ (si quieres reiniciar más cosas, aquí se agrega)
 
-    // =========================
-    // HELPERS: fechas (local) + semana ISO (lunes)
-    // =========================
     function ymdLocal(d = new Date()){
       const y = d.getFullYear();
       const m = String(d.getMonth() + 1).padStart(2, "0");
@@ -723,10 +736,9 @@
       return `${y}-${m}-${day}`;
     }
 
-    // ISO week key: YYYY-W## (semana ISO, lunes como inicio)
     function getISOWeekKey(date = new Date()){
       const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-      const dayNum = d.getUTCDay() || 7; // domingo=7
+      const dayNum = d.getUTCDay() || 7;
       d.setUTCDate(d.getUTCDate() + 4 - dayNum);
       const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
       const week = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
@@ -737,49 +749,31 @@
       return WEEKLY_PREFIXES.some(p => k.startsWith(p));
     }
 
-    // =========================
-    // STORAGE
-    // =========================
     function loadState(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : {
-          checked: {},
-          lastDailyDate: null,
-          lastWeekKey: null
-        };
+        return raw ? JSON.parse(raw) : { checked: {}, lastDailyDate: null, lastWeekKey: null };
       }catch(_){
         return { checked: {}, lastDailyDate: null, lastWeekKey: null };
       }
     }
 
     function saveState(){
-      try{
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      }catch(e){
-        console.warn("No se pudo guardar en localStorage:", e);
-      }
+      try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){ console.warn(e); }
     }
 
     const state = loadState();
 
-    // =========================
-    // REINICIOS AUTOMÁTICOS
-    // =========================
     function ensureDailyReset(){
       const today = ymdLocal();
-
-      // primera vez
       if(!state.lastDailyDate){
         state.lastDailyDate = today;
         saveState();
         return;
       }
-
-      // si cambió el día: borrar SOLO diarios
       if(state.lastDailyDate !== today){
-        const keys = Object.keys(state.checked || {});
-        keys.forEach(k => {
+        // borra SOLO diarios (todo lo que NO sea semanal)
+        Object.keys(state.checked || {}).forEach(k => {
           if(!isWeeklyKey(k)) delete state.checked[k];
         });
         state.lastDailyDate = today;
@@ -789,17 +783,14 @@
 
     function ensureWeeklyReset(){
       const wk = getISOWeekKey();
-
       if(!state.lastWeekKey){
         state.lastWeekKey = wk;
         saveState();
         return;
       }
-
-      // si cambió la semana ISO: borrar SOLO semanales
       if(state.lastWeekKey !== wk){
-        const keys = Object.keys(state.checked || {});
-        keys.forEach(k => {
+        // borra SOLO semanales (epo_)
+        Object.keys(state.checked || {}).forEach(k => {
           if(isWeeklyKey(k)) delete state.checked[k];
         });
         state.lastWeekKey = wk;
@@ -808,9 +799,9 @@
     }
 
     // =========================
-    // BIND CHECKBOXES
+    // BIND arriba (rutina diaria)
     // =========================
-    function bindChecks(){
+    function bindDailyChecks(){
       document.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb => {
         const k = cb.getAttribute("data-key");
         cb.checked = !!state.checked[k];
@@ -818,37 +809,85 @@
         cb.addEventListener("change", () => {
           state.checked[k] = cb.checked;
           saveState();
+          renderWeekView(); // <- refleja abajo automáticamente
         });
       });
     }
 
-    // =========================
-    // LIMPIAR TODO (manual)
-    // =========================
     function clearAll(){
       if(!confirm("¿Seguro que quieres limpiar todas las marcas?")) return;
 
       state.checked = {};
-      // Actualiza marcadores para que no re-limpie inmediatamente
       state.lastDailyDate = ymdLocal();
       state.lastWeekKey = getISOWeekKey();
       saveState();
 
       document.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb => cb.checked = false);
+      renderWeekView();
     }
     window.clearAll = clearAll;
+
+    // =========================
+    // VISTA SEMANAL (solo lectura)
+    // =========================
+    const ROUTINE_MAP = {
+      morning: [
+        { key: "amiodarona_am", label: "Amiodarona (½)" },
+        { key: "rivaroxaban_am", label: "Rivaroxaban 15mg (½)" },
+        { key: "acido_folico_am", label: "Ácido fólico" },
+        { key: "zyplo_am", label: "Zyplo 10 ml (c/8h)" },
+        { key: "linezolid_am", label: "Linezolid (1) (c/12h)" }
+      ],
+      afternoon: [
+        { key: "omeprazol_pm", label: "Omeprazol" },
+        { key: "ziplo_5pm", label: "Ziplo 10 ml (5:00 pm)" },
+        { key: "inhalador_6pm", label: "Inhalador (6:00 pm)" }
+      ],
+      night: [
+        { key: "insulina_night", label: "Insulina" },
+        { key: "sulfato_ferroso_night", label: "Sulfato ferroso" },
+        { key: "zyplo_night", label: "Zyplo (c/8h)" },
+        { key: "linezolid_night", label: "Linezolid (1) después de cenar" },
+        { key: "ertapenem_iv_night", label: "Ertapenem IV" }
+      ]
+    };
+
+    function renderWeekView(){
+      // 1) Render rutina (mañana/tarde/noche) por día pero SOLO como ✅/☐
+      document.querySelectorAll(".mini[data-day][data-block]").forEach(container => {
+        const block = container.getAttribute("data-block");
+        const items = ROUTINE_MAP[block] || [];
+        container.innerHTML = "";
+
+        items.forEach(it => {
+          const done = !!state.checked[it.key];
+          const row = document.createElement("div");
+          row.className = "mrow";
+          row.innerHTML = `
+            <span class="wkmark">${done ? "✅" : "☐"}</span>
+            <div class="mtext">${it.label}</div>
+          `;
+          container.appendChild(row);
+        });
+      });
+
+      // 2) Render eritropoyetina (epo_) como ✅/☐ (ya están en HTML)
+      document.querySelectorAll(".wkmark[data-key]").forEach(span => {
+        const k = span.getAttribute("data-key");
+        span.textContent = state.checked[k] ? "✅" : "☐";
+      });
+    }
 
     // =========================
     // INIT
     // =========================
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // 1) Reinicios automáticos antes de bindear
     ensureDailyReset();
     ensureWeeklyReset();
 
-    // 2) Bind y reflejar estado
-    bindChecks();
+    bindDailyChecks();
+    renderWeekView();
   </script>
 </body>
 </html>
