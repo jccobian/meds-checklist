@@ -705,23 +705,111 @@
   </div>
 
   <script>
-    // Guardado simple para no perder marcas (si no quieres, lo quitamos)
-    const STORAGE_KEY = "meds_calendar_letter_v1";
+    // =========================
+    // CONFIG
+    // =========================
+    const STORAGE_KEY = "meds_calendar_letter_v2"; // v2 para no romper tu storage viejo
 
+    // Prefijos para detectar semanal vs diario
+    const WEEKLY_PREFIXES = ["wk_", "epo_"];
+
+    // =========================
+    // HELPERS: fechas (local) + semana ISO (lunes)
+    // =========================
+    function ymdLocal(d = new Date()){
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    // ISO week key: YYYY-W## (semana ISO, lunes como inicio)
+    function getISOWeekKey(date = new Date()){
+      const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      const dayNum = d.getUTCDay() || 7; // domingo=7
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      const week = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+      return `${d.getUTCFullYear()}-W${String(week).padStart(2, "0")}`;
+    }
+
+    function isWeeklyKey(k){
+      return WEEKLY_PREFIXES.some(p => k.startsWith(p));
+    }
+
+    // =========================
+    // STORAGE
+    // =========================
     function loadState(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : { checked: {} };
+        return raw ? JSON.parse(raw) : {
+          checked: {},
+          lastDailyDate: null,
+          lastWeekKey: null
+        };
       }catch(_){
-        return { checked: {} };
+        return { checked: {}, lastDailyDate: null, lastWeekKey: null };
       }
     }
+
     function saveState(){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      try{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }catch(e){
+        console.warn("No se pudo guardar en localStorage:", e);
+      }
     }
 
     const state = loadState();
 
+    // =========================
+    // REINICIOS AUTOMÁTICOS
+    // =========================
+    function ensureDailyReset(){
+      const today = ymdLocal();
+
+      // primera vez
+      if(!state.lastDailyDate){
+        state.lastDailyDate = today;
+        saveState();
+        return;
+      }
+
+      // si cambió el día: borrar SOLO diarios
+      if(state.lastDailyDate !== today){
+        const keys = Object.keys(state.checked || {});
+        keys.forEach(k => {
+          if(!isWeeklyKey(k)) delete state.checked[k];
+        });
+        state.lastDailyDate = today;
+        saveState();
+      }
+    }
+
+    function ensureWeeklyReset(){
+      const wk = getISOWeekKey();
+
+      if(!state.lastWeekKey){
+        state.lastWeekKey = wk;
+        saveState();
+        return;
+      }
+
+      // si cambió la semana ISO: borrar SOLO semanales
+      if(state.lastWeekKey !== wk){
+        const keys = Object.keys(state.checked || {});
+        keys.forEach(k => {
+          if(isWeeklyKey(k)) delete state.checked[k];
+        });
+        state.lastWeekKey = wk;
+        saveState();
+      }
+    }
+
+    // =========================
+    // BIND CHECKBOXES
+    // =========================
     function bindChecks(){
       document.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb => {
         const k = cb.getAttribute("data-key");
@@ -734,15 +822,32 @@
       });
     }
 
+    // =========================
+    // LIMPIAR TODO (manual)
+    // =========================
     function clearAll(){
       if(!confirm("¿Seguro que quieres limpiar todas las marcas?")) return;
+
       state.checked = {};
+      // Actualiza marcadores para que no re-limpie inmediatamente
+      state.lastDailyDate = ymdLocal();
+      state.lastWeekKey = getISOWeekKey();
       saveState();
+
       document.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb => cb.checked = false);
     }
     window.clearAll = clearAll;
 
+    // =========================
+    // INIT
+    // =========================
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    // 1) Reinicios automáticos antes de bindear
+    ensureDailyReset();
+    ensureWeeklyReset();
+
+    // 2) Bind y reflejar estado
     bindChecks();
   </script>
 </body>
