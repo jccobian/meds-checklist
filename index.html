@@ -78,7 +78,6 @@
       background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
       box-shadow: var(--shadow2);
       backdrop-filter: blur(12px);
-      min-width: 0;
     }
 
     .brand{
@@ -96,16 +95,14 @@
       border: 1px solid rgba(214,179,90,0.28);
       box-shadow: 0 12px 22px rgba(0,0,0,0.35);
       padding: 6px;
-      flex: 0 0 auto;
     }
-    .brand .t{display:flex; flex-direction:column; gap:6px; min-width:0;}
+    .brand .t{display:flex; flex-direction:column; gap:6px;}
     .brand h1{
       margin:0;
       font-size: 20px;
       letter-spacing: .2px;
       font-weight: 820;
       line-height: 1.1;
-      word-break: break-word;
     }
     .pill{
       width: fit-content;
@@ -122,7 +119,6 @@
       gap:10px;
       flex-wrap:wrap;
       justify-content:flex-end;
-      min-width: 0;
     }
 
     button{
@@ -175,7 +171,6 @@
       gap:10px;
       border-bottom: 1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.14);
-      min-width: 0;
     }
     .card-head h2{
       margin:0;
@@ -185,7 +180,6 @@
       gap:10px;
       align-items:center;
       font-weight: 850;
-      min-width: 0;
     }
     .badge{
       font-size: 13px;
@@ -226,8 +220,6 @@
       justify-content:space-between;
       border-bottom: 1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.16);
-      gap: 10px;
-      min-width:0;
     }
     .block .bh strong{
       font-size: 16px;
@@ -236,8 +228,6 @@
     .block .bh span{
       font-size: 13px;
       color: var(--muted);
-      text-align:right;
-      min-width:0;
     }
     .block .bl{
       padding: 10px 12px 14px;
@@ -282,10 +272,9 @@
       font-size: 14px;
       color: var(--muted);
       line-height: 1.25;
-      word-break: break-word;
     }
 
-    /* ===== SEMANA (MATRIZ COMPACTA) ===== */
+    /* ===== SEMANA (MATRIZ) ===== */
     .weekly{ padding: 14px; }
 
     .table-wrap{
@@ -300,7 +289,7 @@
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
-      min-width: 720px;
+      min-width: 760px;
     }
 
     .week-matrix th, .week-matrix td{
@@ -331,8 +320,8 @@
       backdrop-filter: blur(6px);
     }
 
-    .week-matrix th.sticky-col{ width: 320px; }
-    .week-matrix th:not(.sticky-col){ width: calc((100% - 320px)/7); }
+    .week-matrix th.sticky-col{ width: 340px; }
+    .week-matrix th:not(.sticky-col){ width: calc((100% - 340px)/7); }
 
     .week-matrix td{
       font-size: 14px;
@@ -366,9 +355,7 @@
       user-select:none;
     }
 
-    .wkmark.offday{
-      opacity: .28;
-    }
+    .wkmark.offday{ opacity: .28; }
 
     .week-cards{ display:none; }
 
@@ -376,12 +363,11 @@
       outline: 2px solid rgba(214,179,90,0.35);
       outline-offset: -2px;
     }
-
     .week-matrix td.is-today{
       background: rgba(214,179,90,0.06);
     }
 
-    /* móvil: se oculta tabla y se usan cards */
+    /* ===== MÓVIL: usar tarjetas en vez de tabla ===== */
     @media (max-width: 820px){
       body{ padding: 14px; }
       .table-wrap{ display:none; }
@@ -416,6 +402,7 @@
         display:none;
       }
       .day-card.is-today .today-pill{ display:inline-block; }
+
       .sec{ margin-top: 10px; }
       .sec-title{
         font-weight: 900;
@@ -427,9 +414,10 @@
         display:flex;
         gap:10px;
         align-items:flex-start;
-        padding: 6px 0;
+        padding: 7px 0;
       }
       .mtext{ font-size: 14px; line-height: 1.2; }
+      .mrow.dim{ opacity:.35; }
     }
 
     footer{
@@ -448,11 +436,9 @@
     .sep{ width:6px;height:6px;border-radius:999px; background: rgba(214,179,90,0.65); box-shadow: 0 0 0 4px rgba(214,179,90,0.10); }
     .gold{ color: rgba(241,211,139,0.95); }
 
-    /* ===== MOBILE FIX (header + cards) ===== */
+    /* ===== MOBILE FIX (header) ===== */
     @media (max-width: 560px){
-
       body{ padding: 12px; }
-
       .page{ max-width: 100%; }
 
       header{
@@ -506,17 +492,8 @@
         gap: 8px;
       }
 
-      .dose{
-        padding: 10px;
-      }
       .dose .name{ font-size: 15px; }
       .dose .note{ font-size: 13px; }
-
-      .week-cards{ margin-top: 10px; }
-
-      .day-card{ padding: 12px; }
-
-      .day-card .dh strong{ font-size: 17px; }
 
       .wkmark{
         min-width: 26px;
@@ -638,7 +615,7 @@
               <input type="checkbox" data-key="linezolid_am" />
               <div class="txt">
                 <p class="name">Linezolid (1 tableta)</p>
-                <p class="note">Cada 12 horas • después de las comidas</p>
+                <p class="note">Mañana • después de las comidas (cada 12h)</p>
               </div>
             </div>
 
@@ -716,7 +693,7 @@
               <input type="checkbox" data-key="linezolid_night" />
               <div class="txt">
                 <p class="name">Linezolid (1 tableta)</p>
-                <p class="note">Después de cenar (cada 12h)</p>
+                <p class="note">Noche • después de cenar (cada 12h)</p>
               </div>
             </div>
 
@@ -728,11 +705,27 @@
               </div>
             </div>
 
-            <!-- EPO: SOLO TEXTO arriba (NO se marca aquí) -->
             <div class="dose">
+              <input type="checkbox" data-key="epo_mon" />
               <div class="txt">
                 <p class="name">Eritropoyetina</p>
-                <p class="note">Lunes / Miércoles / Viernes (marcar en “Semana”)</p>
+                <p class="note">Lunes (aplicar y marcar)</p>
+              </div>
+            </div>
+
+            <div class="dose">
+              <input type="checkbox" data-key="epo_wed" />
+              <div class="txt">
+                <p class="name">Eritropoyetina</p>
+                <p class="note">Miércoles (aplicar y marcar)</p>
+              </div>
+            </div>
+
+            <div class="dose">
+              <input type="checkbox" data-key="epo_fri" />
+              <div class="txt">
+                <p class="name">Eritropoyetina</p>
+                <p class="note">Viernes (aplicar y marcar)</p>
               </div>
             </div>
 
@@ -742,7 +735,7 @@
       </div>
     </section>
 
-    <!-- SEMANA (MATRIZ COMPACTA) -->
+    <!-- SEMANA -->
     <section class="card">
       <div class="card-head">
         <h2>📅 Semana (vista automática)</h2>
@@ -764,11 +757,10 @@
                 <th data-day="sun">D</th>
               </tr>
             </thead>
-            <tbody id="weekBody">
-              <!-- JS construye filas -->
-            </tbody>
+            <tbody id="weekBody"></tbody>
           </table>
         </div>
+
         <div class="week-cards" id="weekCards"></div>
       </div>
     </section>
@@ -784,9 +776,10 @@
 
   <script>
     // =========================
-    // STORAGE + RESET LUNES (ISO)
+    // STORAGE + RESET SEMANA (ISO)
     // =========================
     const STORAGE_KEY = "meds_calendar_letter_v2_iso";
+
     function loadState(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -800,11 +793,10 @@
     }
     const state = loadState();
 
-    // ISO week stamp: YYYY-Www (semana empieza lunes)
     function getISOWeekStamp(d=new Date()){
       const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-      const day = date.getUTCDay() || 7; // 1=Mon..7=Sun
-      date.setUTCDate(date.getUTCDate() + 4 - day); // a jueves
+      const day = date.getUTCDay() || 7;     // 1=Mon..7=Sun
+      date.setUTCDate(date.getUTCDate() + 4 - day);
       const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
       const weekNo = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
       const yyyy = date.getUTCFullYear();
@@ -812,7 +804,6 @@
       return `${yyyy}-W${ww}`;
     }
 
-    // si cambió la semana ISO → limpia SOLO rutina diaria (no epo_*)
     function enforceWeeklyReset(){
       const stampNow = getISOWeekStamp();
       if(state.weekStamp && state.weekStamp === stampNow) return;
@@ -827,7 +818,7 @@
     }
 
     // =========================
-    // MAPEOS (rutina diaria)
+    // MAPEO (la tabla SEMANA depende de esto)
     // =========================
     const ROUTINE_MAP = {
       morning: [
@@ -835,7 +826,7 @@
         { key:"rivaroxaban_am",  label:"Rivaroxaban 15mg (½)" },
         { key:"acido_folico_am", label:"Ácido fólico" },
         { key:"zyplo_am",        label:"Zyplo 10 ml (c/8h)" },
-        { key:"linezolid_am",    label:"Linezolid (1) (c/12h)" }
+        { key:"linezolid_am",    label:"Linezolid (mañana) (c/12h)" }
       ],
       afternoon: [
         { key:"omeprazol_pm",    label:"Omeprazol" },
@@ -843,11 +834,11 @@
         { key:"inhalador_6pm",   label:"Inhalador (6:00 pm)" }
       ],
       night: [
-        { key:"insulina_night",          label:"Insulina" },
-        { key:"sulfato_ferroso_night",   label:"Sulfato ferroso" },
-        { key:"zyplo_night",             label:"Zyplo (c/8h)" },
-        { key:"linezolid_night",         label:"Linezolid (1) después de cenar" },
-        { key:"ertapenem_iv_night",      label:"Ertapenem IV" }
+        { key:"insulina_night",        label:"Insulina" },
+        { key:"sulfato_ferroso_night", label:"Sulfato ferroso" },
+        { key:"zyplo_night",           label:"Zyplo (c/8h)" },
+        { key:"linezolid_night",       label:"Linezolid (noche) (c/12h)" },
+        { key:"ertapenem_iv_night",    label:"Ertapenem IV" }
       ]
     };
 
@@ -857,13 +848,13 @@
     };
 
     function getTodayDayKey(){
-      const d = new Date(); // 0=Dom..6=Sáb
+      const d = new Date();
       const map = ["sun","mon","tue","wed","thu","fri","sat"];
       return map[d.getDay()];
     }
 
     // =========================
-    // BIND CHECKBOXES (arriba)
+    // CHECKBOXES
     // =========================
     function bindChecks(){
       document.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb => {
@@ -881,7 +872,7 @@
     function clearAll(){
       if(!confirm("¿Seguro que quieres limpiar todas las marcas?")) return;
 
-      // Limpia rutina diaria, pero respeta EPO
+      // Limpia rutina diaria, respeta EPO
       const nextChecked = {};
       for(const [k,v] of Object.entries(state.checked || {})){
         if(k.startsWith("epo_")) nextChecked[k] = v;
@@ -898,7 +889,7 @@
     window.clearAll = clearAll;
 
     // =========================
-    // SEMANA: MATRIZ COMPACTA
+    // MATRIZ SEMANAL
     // =========================
     const WEEK_MATRIX = [
       { group: "🌤️ Mañana", items: ROUTINE_MAP.morning },
@@ -907,7 +898,7 @@
       { group: "💉 Eritropoyetina (L-M-V)", items: [
           { key:"epo_mon", label:"Eritropoyetina (Lunes)" },
           { key:"epo_wed", label:"Eritropoyetina (Miércoles)" },
-          { key:"epo_fri", label:"Eritropoyetina (Viernes)" },
+          { key:"epo_fri", label:"Eritropoyetina (Viernes)" }
         ]
       }
     ];
@@ -949,7 +940,7 @@
       const today = getTodayDayKey();
       const days = ["mon","tue","wed","thu","fri","sat","sun"];
 
-      // resalta columna hoy (desktop table)
+      // resalta columna hoy
       const table = document.getElementById("weekMatrix");
       if(table){
         table.querySelectorAll("thead th").forEach(th => th.classList.remove("is-today"));
@@ -957,7 +948,7 @@
 
         const idx = days.indexOf(today);
         if(idx >= 0){
-          const col = idx + 2; // +1 por sticky
+          const col = idx + 2;
           const thToday = table.querySelector(`thead th:nth-child(${col})`);
           if(thToday) thToday.classList.add("is-today");
           table.querySelectorAll("tbody tr").forEach(tr => {
@@ -967,7 +958,7 @@
         }
       }
 
-      // pinta marks: Rutina SOLO HOY, EPO por su día real
+      // Rutina: SOLO HOY refleja estado; EPO: por día real
       document.querySelectorAll('.wkmark[data-day][data-key]').forEach(el => {
         const day = el.getAttribute("data-day");
         const key = el.getAttribute("data-key");
@@ -975,14 +966,14 @@
         const isEpo = key.startsWith("epo_");
         const checked = !!state.checked[key];
 
-        if (isEpo) {
+        if(isEpo){
           el.textContent = checked ? "✅" : "☐";
           el.classList.toggle("offday", false);
-        } else {
-          if (isToday) {
+        }else{
+          if(isToday){
             el.textContent = checked ? "✅" : "☐";
             el.classList.toggle("offday", false);
-          } else {
+          }else{
             el.textContent = "☐";
             el.classList.toggle("offday", true);
           }
@@ -1026,9 +1017,9 @@
           b.items.forEach(it => {
             const checked = !!state.checked[it.key];
             const mark = isToday ? (checked ? "✅" : "☐") : "☐";
-            const dim  = isToday ? "" : " style=\"opacity:.35\"";
+            const cls  = isToday ? "" : " dim";
             html += `
-              <div class="mrow"${dim}>
+              <div class="mrow${cls}">
                 <span class="wkmark">${mark}</span>
                 <div class="mtext">${it.label}</div>
               </div>
@@ -1037,7 +1028,7 @@
           html += `</div>`;
         });
 
-        // EPO (L-M-V) por día real (también en móvil)
+        // EPO por día real (solo L/X/V)
         html += `<div class="sec"><div class="sec-title">💉 Eritropoyetina</div>`;
         const epoMap = { mon:"epo_mon", wed:"epo_wed", fri:"epo_fri" };
         if(epoMap[day]){
@@ -1051,7 +1042,7 @@
           `;
         }else{
           html += `
-            <div class="mrow" style="opacity:.35">
+            <div class="mrow dim">
               <span class="wkmark">—</span>
               <div class="mtext">No aplica</div>
             </div>
@@ -1064,25 +1055,12 @@
       });
     }
 
-    // click en EPO (semana): toggle y guardar (desktop table + mobile cards NO son inputs)
-    // hacemos delegación en la tabla: si tocan un wkmark de epo_ se togglea
-    document.addEventListener("click", (ev) => {
-      const el = ev.target && ev.target.closest ? ev.target.closest(".wkmark[data-key]") : null;
-      if(!el) return;
-      const key = el.getAttribute("data-key");
-      if(!key || !key.startsWith("epo_")) return;
-
-      // toggle
-      state.checked[key] = !state.checked[key];
-      saveState();
-      renderWeekMirror();
-    });
-
     // =========================
     // INIT
     // =========================
     enforceWeeklyReset();
 
+    // footer + badge hoy
     document.getElementById("year").textContent = new Date().getFullYear();
     const todayName = DAY_LABELS[getTodayDayKey()] || "Hoy";
     document.getElementById("todayBadge").textContent = `Hoy: ${todayName} • ${getISOWeekStamp()}`;
