@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Lista de compras – Medicamentos</title>
-
+  <title>Calendario de Medicamentos (Impresión Carta)</title>
   <link rel="icon" type="image/x-icon" href="./logo.ico" />
 
   <style>
     :root{
       --bg0:#07080b;
       --bg2:#0d0f16;
+      --paper:#0b0d12;
 
       --text:#f3f4f7;
-      --muted:#b2b6c2;
+      --muted:#c7cad3;
 
       --gold:#d6b35a;
       --gold2:#f1d38b;
 
-      --line: rgba(255,255,255,0.08);
-      --shadow2: 0 10px 26px rgba(0,0,0,0.40);
+      --line: rgba(255,255,255,0.10);
+      --shadow2: 0 14px 34px rgba(0,0,0,0.45);
 
       --r:18px;
     }
@@ -32,7 +32,7 @@
       color:var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, Helvetica, sans-serif;
       background:
-        radial-gradient(900px 520px at 20% 0%, rgba(214,179,90,0.15), transparent 58%),
+        radial-gradient(900px 520px at 20% 0%, rgba(214,179,90,0.14), transparent 58%),
         radial-gradient(900px 520px at 100% 10%, rgba(214,179,90,0.10), transparent 62%),
         radial-gradient(1100px 700px at 60% 120%, rgba(241,211,139,0.08), transparent 65%),
         linear-gradient(180deg, var(--bg0), var(--bg2));
@@ -47,7 +47,7 @@
       position:fixed;
       inset:0;
       pointer-events:none;
-      background: url("./logo.png") center 28% / 520px auto no-repeat;
+      background: url("./logo.png") center 22% / 540px auto no-repeat;
       opacity: 0.035;
       filter: saturate(1.1) contrast(1.05);
       transform: translateZ(0);
@@ -68,7 +68,6 @@
       max-width: 1020px;
       display:flex;
       flex-direction:column;
-      min-height: calc(100vh - 44px);
       gap: 16px;
       position:relative;
     }
@@ -81,7 +80,7 @@
       padding: 16px 16px;
       border-radius: var(--r);
       border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
       box-shadow: var(--shadow2);
       backdrop-filter: blur(12px);
     }
@@ -90,78 +89,48 @@
       display:flex;
       align-items:center;
       gap:12px;
-      min-width: 260px;
+      min-width: 280px;
     }
     .brand img{
-      width: 64px;
-      height: 64px;
-      border-radius: 12px;
+      width: 68px;
+      height: 68px;
+      border-radius: 14px;
       object-fit: contain;
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(214,179,90,0.28);
       box-shadow: 0 12px 22px rgba(0,0,0,0.35);
       padding: 6px;
     }
-    .brand .t{display:flex; flex-direction:column; gap:4px;}
+    .brand .t{display:flex; flex-direction:column; gap:6px;}
     .brand h1{
       margin:0;
-      font-size: 15px;
-      letter-spacing: .25px;
-      font-weight: 720;
+      font-size: 20px;          /* MÁS GRANDE */
+      letter-spacing: .2px;
+      font-weight: 820;
+      line-height: 1.1;
     }
     .pill{
       width: fit-content;
-      font-size: 12px;
+      font-size: 14px;          /* MÁS GRANDE */
       color: var(--muted);
-      padding: 6px 10px;
+      padding: 8px 12px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.25);
     }
 
-    .controls{
+    .actions{
       display:flex;
-      align-items:center;
       gap:10px;
       flex-wrap:wrap;
       justify-content:flex-end;
-      width:100%;
-    }
-
-    .search{
-      position:relative;
-      min-width: 240px;
-      flex: 1 1 280px;
-      max-width: 460px;
-    }
-    .search input{
-      width:100%;
-      padding: 12px 12px 12px 40px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.28);
-      color: var(--text);
-      outline:none;
-      transition: .18s ease;
-    }
-    .search input:focus{
-      border-color: rgba(214,179,90,0.45);
-      box-shadow: 0 0 0 4px rgba(214,179,90,0.14);
-    }
-    .search .icon{
-      position:absolute;
-      left:12px; top:50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      font-size: 16px;
-      pointer-events:none;
     }
 
     button{
-      border: 1px solid rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.12);
       background: rgba(0,0,0,0.22);
       color: var(--text);
-      padding: 10px 12px;
+      padding: 12px 14px;
       border-radius: 14px;
       cursor:pointer;
       transition: .16s ease;
@@ -170,6 +139,7 @@
       gap:8px;
       user-select:none;
       white-space:nowrap;
+      font-size: 14px;
     }
     button:hover{
       transform: translateY(-1px);
@@ -190,13 +160,9 @@
 
     .grid{
       display:grid;
-      grid-template-columns: 1.3fr .7fr;
+      grid-template-columns: 1fr;
       gap:16px;
       align-items:start;
-      flex: 1 1 auto;
-    }
-    @media (max-width: 900px){
-      .grid{grid-template-columns: 1fr}
     }
 
     .card{
@@ -214,479 +180,520 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      background: rgba(0,0,0,0.12);
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.14);
     }
     .card-head h2{
       margin:0;
-      font-size: 13px;
-      letter-spacing: .35px;
+      font-size: 16px; /* MÁS GRANDE */
+      letter-spacing: .25px;
       display:flex;
       gap:10px;
       align-items:center;
-      font-weight: 760;
+      font-weight: 850;
     }
     .badge{
-      font-size: 12px;
-      padding: 5px 10px;
+      font-size: 13px;
+      padding: 6px 10px;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.12);
       color: var(--muted);
       background: rgba(0,0,0,0.20);
     }
     .badge.gold{
-      border-color: rgba(214,179,90,0.30);
+      border-color: rgba(214,179,90,0.32);
       color: rgba(241,211,139,0.95);
       background: rgba(214,179,90,0.10);
     }
 
-    .list{
-      padding: 10px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
+    /* ===== RUTINA (mañana/tarde/noche) ===== */
+    .routine{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 14px;
+    }
+    @media (max-width: 860px){
+      .routine{ grid-template-columns: 1fr; }
     }
 
-    .item{
+    .block{
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 16px;
+      background: rgba(0,0,0,0.16);
+      overflow:hidden;
+    }
+    .block .bh{
+      padding: 12px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.16);
+    }
+    .block .bh strong{
+      font-size: 16px;
+      letter-spacing: .2px;
+    }
+    .block .bh span{
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .block .bl{
+      padding: 10px 12px 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+
+    .dose{
       display:flex;
       align-items:flex-start;
-      gap:12px;
-      padding: 12px 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.08);
+      gap: 10px;
+      padding: 10px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.18);
-      transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease, opacity .14s ease;
-      position:relative;
-      overflow:hidden;
-      isolation:isolate;
-    }
-    .item:hover{
-      border-color: rgba(214,179,90,0.22);
-      transform: translateY(-1px);
-      box-shadow: 0 12px 22px rgba(0,0,0,0.30);
     }
 
-    /* ===== MAGIA DORADA AL MARCAR ===== */
-    .item::after{
-      content:"";
-      position:absolute;
-      left: var(--sx, 50%);
-      top: var(--sy, 50%);
-      width: 12px;
-      height: 12px;
-      transform: translate(-50%, -50%) scale(0);
-      border-radius: 999px;
-      pointer-events:none;
-      opacity: 0;
-      background:
-        radial-gradient(circle,
-          rgba(241,211,139,0.85) 0%,
-          rgba(214,179,90,0.55) 25%,
-          rgba(214,179,90,0.20) 45%,
-          transparent 65%);
-      filter: blur(0.2px);
-      z-index: 0;
-    }
-
-    .item.spark::after{
-      animation: sparkBurst 650ms ease-out forwards;
-    }
-
-    @keyframes sparkBurst{
-      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.25); }
-      15%  { opacity: 1; transform: translate(-50%, -50%) scale(2.4); }
-      55%  { opacity: 0.9; transform: translate(-50%, -50%) scale(7.6); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(10.5); }
-    }
-
-    .sparkle{
-      position:absolute;
-      left: 0; top: 0;
-      width: 6px; height: 6px;
-      border-radius: 999px;
-      pointer-events:none;
-      background: radial-gradient(circle, rgba(241,211,139,.95), rgba(214,179,90,.4), transparent 70%);
-      filter: drop-shadow(0 0 8px rgba(214,179,90,.25));
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0.6);
-      animation: sparkleFly 650ms ease-out forwards;
-      z-index: 1;
-    }
-    @keyframes sparkleFly{
-      0%   { opacity: 0; transform: translate(var(--x0), var(--y0)) scale(0.6); }
-      15%  { opacity: 1; }
-      100% { opacity: 0; transform: translate(var(--x1), var(--y1)) scale(0.2); }
-    }
-
-    .item.done{
-      opacity: .78;
-      border-color: rgba(214,179,90,0.26);
-    }
-    .item.done::before{
-      content:"";
-      position:absolute;
-      inset:-40px;
-      background: radial-gradient(520px 170px at 10% 10%, rgba(214,179,90,0.10), transparent 60%);
-      pointer-events:none;
-      z-index:0;
-    }
-
-    .check{
-      flex:0 0 auto;
+    /* checkbox grande para imprimir */
+    .dose input[type="checkbox"]{
       width: 22px;
       height: 22px;
+      accent-color: var(--gold);
       margin-top: 2px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.20);
-      background: rgba(0,0,0,0.20);
-      display:grid;
-      place-items:center;
+      flex: 0 0 auto;
       cursor:pointer;
-      transition: .16s ease;
-      z-index: 2;
-    }
-    .item.done .check{
-      border-color: rgba(214,179,90,0.55);
-      background: rgba(214,179,90,0.14);
-      box-shadow: 0 0 0 4px rgba(214,179,90,0.12);
-    }
-    .check svg{
-      width: 14px; height: 14px;
-      opacity: 0;
-      transform: scale(.85);
-      transition: .16s ease;
-    }
-    .item.done .check svg{
-      opacity: 1;
-      transform: scale(1);
     }
 
-    .content{
-      flex:1 1 auto;
+    .dose .txt{
       display:flex;
       flex-direction:column;
-      gap:6px;
+      gap: 4px;
       min-width:0;
-      z-index: 2;
     }
-    .name{
+    .dose .name{
       margin:0;
-      font-weight: 740;
-      font-size: 14px;
-      line-height: 1.22;
+      font-size: 16px;     /* MUY LEGIBLE */
+      font-weight: 850;
+      line-height: 1.15;
       word-break: break-word;
     }
-    .meta{
+    .dose .note{
       margin:0;
+      font-size: 14px;     /* MUY LEGIBLE */
       color: var(--muted);
-      font-size: 12px;
       line-height: 1.25;
     }
 
-    .tags{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-top:2px;
-      z-index: 2;
+    /* ===== TABLA SEMANAL ===== */
+    .weekly{
+      padding: 14px;
     }
-    .tag{
-      font-size: 11px;
-      padding: 4px 8px;
-      border-radius: 999px;
+    .table-wrap{
+      overflow:auto;
+      border-radius: 16px;
       border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.20);
-      color: var(--muted);
+      background: rgba(0,0,0,0.14);
     }
-    .tag.req{ border-color: rgba(214,179,90,0.30); color: rgba(241,211,139,0.95); background: rgba(214,179,90,0.10); }
-    .tag.iv{ border-color: rgba(214,179,90,0.22); color: rgba(214,179,90,0.95); background: rgba(214,179,90,0.07); }
-    .tag.sc{ border-color: rgba(241,211,139,0.22); color: rgba(241,211,139,0.95); background: rgba(241,211,139,0.07); }
-
-    .side{
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width: 920px; /* para que en escritorio se vea completo */
+    }
+    th, td{
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      border-right: 1px solid rgba(255,255,255,0.08);
+      padding: 12px 10px;
+      vertical-align:top;
+    }
+    th:last-child, td:last-child{ border-right: none; }
+    th{
+      text-align:left;
+      font-size: 14px;
+      color: rgba(241,211,139,0.95);
+      background: rgba(214,179,90,0.08);
+      letter-spacing: .2px;
+    }
+    td{
+      font-size: 14px;
+      color: var(--text);
+    }
+    .cell-title{
+      font-weight: 850;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: rgba(241,211,139,0.95);
+    }
+    .mini{
       display:flex;
       flex-direction:column;
-      gap:16px;
-      position:sticky;
-      top:16px;
+      gap: 8px;
     }
-    @media (max-width: 900px){
-      .side{position:static}
+    .mini .mrow{
+      display:flex;
+      gap: 8px;
+      align-items:flex-start;
     }
-
-    .stats{ padding: 16px; display:flex; flex-direction:column; gap:12px; }
-    .row{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-size: 12px; color: var(--muted); }
-
-    .bar{
-      width:100%;
-      height: 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      overflow:hidden;
-      border: 1px solid rgba(255,255,255,0.08);
+    .mini input[type="checkbox"]{
+      width: 18px;
+      height: 18px;
+      accent-color: var(--gold);
+      margin-top: 2px;
+      flex:0 0 auto;
     }
-    .bar > div{
-      height:100%;
-      width: 0%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(214,179,90,0.95), rgba(241,211,139,0.95));
-      transition: width .22s ease;
-      box-shadow: 0 0 18px rgba(214,179,90,0.22);
-    }
-
-    .tip{
-      padding: 14px 16px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.4;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      background: rgba(0,0,0,0.10);
+    .mini .mtext{
+      line-height: 1.2;
     }
 
     footer{
       margin-top: 4px;
-      padding: 14px 10px 6px;
+      padding: 14px 10px 10px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      color: rgba(178,182,194,0.92);
-      font-size: 12px;
-      border-top: 1px solid rgba(255,255,255,0.08);
+      color: rgba(199,202,211,0.95);
+      font-size: 13px;
+      border-top: 1px solid rgba(255,255,255,0.10);
       text-shadow: 0 6px 18px rgba(0,0,0,0.35);
     }
     footer .right{ display:flex; gap:10px; align-items:center; justify-content:flex-end; flex-wrap:wrap; }
     .sep{ width:6px;height:6px;border-radius:999px; background: rgba(214,179,90,0.65); box-shadow: 0 0 0 4px rgba(214,179,90,0.10); }
     .gold{ color: rgba(241,211,139,0.95); }
 
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.55);
-      color: var(--text);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 999px;
-      padding: 10px 14px;
-      box-shadow: 0 18px 44px rgba(0,0,0,0.55);
-      opacity: 0;
-      pointer-events:none;
-      transition: .18s ease;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      max-width: calc(100% - 24px);
-      backdrop-filter: blur(10px);
-    }
-    .toast.show{ opacity: 1; transform: translateX(-50%) translateY(-6px); }
-    .toast .dot{ width: 10px; height: 10px; border-radius: 999px; background: var(--gold); box-shadow: 0 0 0 4px rgba(214,179,90,0.14); }
-    .toast .tmsg{ font-size: 12px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; color: var(--text); }
+    /* ===== IMPRESIÓN (Carta) ===== */
+    @page { size: letter; margin: 0.55in; }
 
-    /* evita scroll y glitches mientras está el video */
-    body.video-lock { overflow: hidden; }
-
-    /* asegura que el modal se vea arriba y centrado */
-    .video-modal { display:flex; }
-
-    /* botón cerrar visible siempre */
-    .video-close { display:flex; }
-
-    /* =========================
-       Video Modal
-       ========================= */
-    .video-modal{
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(8px);
-      z-index: 999;
-      opacity: 1;
-      transition: opacity .3s ease;
-      padding: 20px;
-    }
-    .video-modal.fade-out{
-      opacity: 0;
-      pointer-events: none;
-    }
-    .video-container{
-      position: relative;
-      width: 100%;
-      max-width: 720px;
-      aspect-ratio: 16 / 9;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.60);
-      border: 1px solid rgba(214,179,90,0.22);
-    }
-    .video-container video{
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      background: #000;
-    }
-    .video-close{
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.20);
-      background: rgba(0,0,0,0.50);
-      color: var(--text);
-      font-size: 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: .16s ease;
-      z-index: 10;
-    }
-    .video-close:hover{
-      background: rgba(0,0,0,0.70);
-      border-color: rgba(214,179,90,0.45);
-    }
-
-    /* =========================
-       Mobile polish (<= 560px)
-       ========================= */
-    @media (max-width: 560px){
-      body{ padding: 14px; }
-
-      header{
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-        padding: 14px;
+    @media print{
+      body{
+        padding:0;
+        background: #fff !important;
+        color: #111 !important;
       }
-
-      .brand{
-        min-width: 0;
-        width: 100%;
+      body::before, body::after{ display:none !important; }
+      .page{ max-width: none; }
+      header, .card, footer{
+        box-shadow: none !important;
+        backdrop-filter: none !important;
       }
-      .brand img{
-        width: 56px;
-        height: 56px;
-        border-radius: 14px;
+      header, .card{
+        border: 1px solid #ddd !important;
+        background: #fff !important;
+        color: #111 !important;
       }
-      .brand h1{ font-size: 15px; }
-
-      .controls{
-        width: 100%;
-        justify-content: stretch;
-        gap: 10px;
+      .pill, .badge{
+        border: 1px solid #ccc !important;
+        background: #f7f7f7 !important;
+        color: #333 !important;
       }
-
-      .search{
-        min-width: 0;
-        max-width: none;
-        width: 100%;
+      .badge.gold, th{
+        color: #6a4b00 !important;
+        background: #fff7e6 !important;
+        border-color: #e7d3a6 !important;
       }
-      .search input{
-        padding: 13px 12px 13px 40px;
-        border-radius: 16px;
-        font-size: 16px; /* evita zoom raro en iOS */
+      .dose, .block, .table-wrap{
+        border-color: #ddd !important;
+        background: #fff !important;
       }
-
-      .controls button{
-        flex: 1 1 calc(50% - 6px);
-        justify-content: center;
-        padding: 12px 12px;
-        border-radius: 16px;
-      }
-
-      .grid{ grid-template-columns: 1fr; }
-      .side{ position: static; top: auto; }
-
-      .card-head{ padding: 12px 14px; }
-      .list{ padding: 10px; }
-
-      .item{
-        padding: 14px 12px;
-        border-radius: 18px;
-      }
-      .check{
-        width: 26px;
-        height: 26px;
-        border-radius: 10px;
-      }
-      .name{ font-size: 15px; }
-      .meta{ font-size: 12px; }
-
-      footer{
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 8px;
-        padding-bottom: 12px;
-      }
+      .dose .note, footer{ color:#333 !important; }
+      .actions{ display:none !important; } /* oculta botones al imprimir */
+      table{ min-width: 0; }             /* imprime ajustado */
     }
   </style>
 </head>
 
 <body>
   <div class="page">
+
     <header>
       <div class="brand">
         <img src="./logo.png" alt="Logo" />
         <div class="t">
-          <h1>Lista de compras – Medicamentos</h1>
-          <div class="pill">Marca lo encontrado • Se guarda automáticamente</div>
+          <h1>Calendario de medicamentos</h1>
+          <div class="pill">Impresión Carta • Marcar dosis (checkbox)</div>
         </div>
       </div>
 
-      <div class="controls">
-        <div class="search">
-          <span class="icon">🔎</span>
-          <input id="search" type="search" placeholder="Buscar (ej. ‘Ertapenem’, ‘Kabiven’, ‘Eritropoyetina’)..." />
-        </div>
-        <button class="btn-gold" id="btnMarkAll">✅ Marcar todo</button>
-        <button class="btn-danger" id="btnClear">🧼 Limpiar</button>
+      <div class="actions">
+        <button class="btn-gold" onclick="window.print()">🖨️ Imprimir</button>
+        <button class="btn-danger" onclick="clearAll()">🧼 Limpiar marcas</button>
       </div>
     </header>
 
-    <div class="grid">
-      <main class="card">
-        <div class="card-head">
-          <h2>🛒 Lista 1 <span class="badge gold" id="countA">0/0</span></h2>
-          <span class="badge">Prioridad</span>
-        </div>
-        <div class="list" id="listA"></div>
+    <!-- RUTINA DIARIA -->
+    <section class="card">
+      <div class="card-head">
+        <h2>🕒 Rutina diaria</h2>
+        <span class="badge gold">Mañana • Tarde • Noche</span>
+      </div>
 
-        <div class="card-head">
-          <h2>🛒 Lista 2 <span class="badge gold" id="countB">0/0</span></h2>
-          <span class="badge">Resto</span>
-        </div>
-        <div class="list" id="listB"></div>
-      </main>
+      <div class="routine">
 
-      <aside class="side">
-        <section class="card">
-          <div class="card-head">
-            <h2>📊 Progreso <span class="badge gold" id="countAll">0/0</span></h2>
-            <span class="badge gold" id="percent">0%</span>
+        <!-- MAÑANA -->
+        <div class="block">
+          <div class="bh">
+            <strong>🌤️ Mañana</strong>
+            <span>después / según indique</span>
           </div>
+          <div class="bl">
 
-          <div class="stats">
-            <div class="row"><span>Encontrados</span><strong id="foundText">0</strong></div>
-            <div class="bar"><div id="barFill"></div></div>
-            <div class="row"><span>Pendientes</span><strong id="leftText">0</strong></div>
-
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-              <button id="btnCopyRemaining" title="Copia los pendientes al portapapeles">📋 Copiar pendientes</button>
-              <button id="btnCopyAll" title="Copia toda la lista al portapapeles">📋 Copiar todo</button>
+            <div class="dose">
+              <input type="checkbox" data-key="amiodarona_am" />
+              <div class="txt">
+                <p class="name">Amiodarona (½ tableta)</p>
+                <p class="note">Mañana</p>
+              </div>
             </div>
-          </div>
 
-          <div class="tip">
-            Tip: da click en el renglón para marcar. Ahora tiene “magia dorada” ✨😄
+            <div class="dose">
+              <input type="checkbox" data-key="rivaroxaban_am" />
+              <div class="txt">
+                <p class="name">Rivaroxaban 15 mg (½ tableta)</p>
+                <p class="note">Mañana</p>
+              </div>
+            </div>
+
+            <div class="dose">
+              <input type="checkbox" data-key="acido_folico_am" />
+              <div class="txt">
+                <p class="name">Ácido fólico</p>
+                <p class="note">Mañana</p>
+              </div>
+            </div>
+
+            <div class="dose">
+              <input type="checkbox" data-key="zyplo_am" />
+              <div class="txt">
+                <p class="name">Zyplo 10 ml</p>
+                <p class="note">Cada 8 horas (primera dosis en la mañana)</p>
+              </div>
+            </div>
+
+            <div class="dose">
+              <input type="checkbox" data-key="linezolid_am" />
+              <div class="txt">
+                <p class="name">Linezolid (1 tableta)</p>
+                <p class="note">Cada 12 horas • después de las comidas</p>
+              </div>
+            </div>
+
           </div>
-        </section>
-      </aside>
-    </div>
+        </div>
+
+        <!-- TARDE -->
+        <div class="block">
+          <div class="bh">
+            <strong>🌇 Tarde</strong>
+            <span>horarios</span>
+          </div>
+          <div class="bl">
+
+            <div class="dose">
+              <input type="checkbox" data-key="omeprazol_pm" />
+              <div class="txt">
+                <p class="name">Omeprazol</p>
+                <p class="note">Tarde</p>
+              </div>
+            </div>
+
+            <div class="dose">
+              <input type="checkbox" data-key="ziplo_5pm" />
+              <div class="txt">
+                <p class="name">Ziplo 10 ml</p>
+                <p class="note">5:00 pm</p>
+              </div>
+            </div>
+
+            <div class="dose">
+              <input type="checkbox" data-key="inhalador_6pm" />
+              <div class="txt">
+                <p class="name">Inhalador</p>
+                <p class="note">6:00 pm</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- NOCHE -->
+        <div class="block">
+          <div class="bh">
+            <strong>🌙 Noche</strong>
+            <span>cierre del día</span>
+          </div>
+          <div class="bl">
+
+            <div class="dose">
+              <input type="checkbox" data-key="insulina_night" />
+              <div class="txt">
+                <p class="name">Insulina</p>
+                <p class="note">Noche</p>
+              </div>
+            </div>
+
+            <div class="dose">
+              <input type="checkbox" data-key="sulfato_ferroso_night" />
+              <div class="txt">
+                <p class="name">Sulfato ferroso</p>
+                <p class="note">Noche</p>
+              </div>
+            </div>
+
+            <div class="dose">
+              <input type="checkbox" data-key="zyplo_night" />
+              <div class="txt">
+                <p class="name">Zyplo</p>
+                <p class="note">Noche (siguiente dosis cada 8h)</p>
+              </div>
+            </div>
+
+            <div class="dose">
+              <input type="checkbox" data-key="linezolid_night" />
+              <div class="txt">
+                <p class="name">Linezolid (1 tableta)</p>
+                <p class="note">Después de cenar (cada 12h)</p>
+              </div>
+            </div>
+
+            <div class="dose">
+              <input type="checkbox" data-key="ertapenem_iv_night" />
+              <div class="txt">
+                <p class="name">Ertapenem IV</p>
+                <p class="note">Noche</p>
+              </div>
+            </div>
+
+            <div class="dose">
+              <input type="checkbox" data-key="eritropoyetina_mwf" />
+              <div class="txt">
+                <p class="name">Eritropoyetina</p>
+                <p class="note">Lunes • Miércoles • Viernes</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CALENDARIO SEMANAL -->
+    <section class="card">
+      <div class="card-head">
+        <h2>🗓️ Calendario semanal (marcar dosis especiales)</h2>
+        <span class="badge">Recomendado para: Eritropoyetina (L-M-V) y control</span>
+      </div>
+
+      <div class="weekly">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:140px;">Bloque</th>
+                <th>Lunes</th>
+                <th>Martes</th>
+                <th>Miércoles</th>
+                <th>Jueves</th>
+                <th>Viernes</th>
+                <th>Sábado</th>
+                <th>Domingo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="cell-title">Mañana</div>
+                  <div style="color:var(--muted); font-size:13px;">Rutina</div>
+                </td>
+                <td colspan="7">
+                  <div class="mini">
+                    <div class="mrow"><input type="checkbox" data-key="wk_amiodarona" /><div class="mtext">Amiodarona (½)</div></div>
+                    <div class="mrow"><input type="checkbox" data-key="wk_rivaroxaban" /><div class="mtext">Rivaroxaban 15mg (½)</div></div>
+                    <div class="mrow"><input type="checkbox" data-key="wk_acido_folico" /><div class="mtext">Ácido fólico</div></div>
+                    <div class="mrow"><input type="checkbox" data-key="wk_zyplo_am" /><div class="mtext">Zyplo 10 ml (c/8h)</div></div>
+                    <div class="mrow"><input type="checkbox" data-key="wk_linezolid_am" /><div class="mtext">Linezolid (1) (c/12h)</div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="cell-title">Tarde</div>
+                  <div style="color:var(--muted); font-size:13px;">Rutina</div>
+                </td>
+                <td colspan="7">
+                  <div class="mini">
+                    <div class="mrow"><input type="checkbox" data-key="wk_omeprazol" /><div class="mtext">Omeprazol</div></div>
+                    <div class="mrow"><input type="checkbox" data-key="wk_ziplo_5pm" /><div class="mtext">Ziplo 10 ml (5:00 pm)</div></div>
+                    <div class="mrow"><input type="checkbox" data-key="wk_inhalador_6pm" /><div class="mtext">Inhalador (6:00 pm)</div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="cell-title">Noche</div>
+                  <div style="color:var(--muted); font-size:13px;">Rutina</div>
+                </td>
+                <td colspan="7">
+                  <div class="mini">
+                    <div class="mrow"><input type="checkbox" data-key="wk_insulina" /><div class="mtext">Insulina</div></div>
+                    <div class="mrow"><input type="checkbox" data-key="wk_sulfato" /><div class="mtext">Sulfato ferroso</div></div>
+                    <div class="mrow"><input type="checkbox" data-key="wk_zyplo_night" /><div class="mtext">Zyplo (c/8h)</div></div>
+                    <div class="mrow"><input type="checkbox" data-key="wk_linezolid_night" /><div class="mtext">Linezolid (1) después de cenar</div></div>
+                    <div class="mrow"><input type="checkbox" data-key="wk_ertapenem" /><div class="mtext">Ertapenem IV</div></div>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <div class="cell-title">Eritropoyetina</div>
+                  <div style="color:var(--muted); font-size:13px;">L-M-V</div>
+                </td>
+                <td>
+                  <div class="mini">
+                    <div class="mrow"><input type="checkbox" data-key="epo_mon" /><div class="mtext">Aplicada</div></div>
+                  </div>
+                </td>
+                <td>
+                  <div class="mini">
+                    <div class="mrow"><input type="checkbox" data-key="epo_tue" /><div class="mtext">—</div></div>
+                  </div>
+                </td>
+                <td>
+                  <div class="mini">
+                    <div class="mrow"><input type="checkbox" data-key="epo_wed" /><div class="mtext">Aplicada</div></div>
+                  </div>
+                </td>
+                <td>
+                  <div class="mini">
+                    <div class="mrow"><input type="checkbox" data-key="epo_thu" /><div class="mtext">—</div></div>
+                  </div>
+                </td>
+                <td>
+                  <div class="mini">
+                    <div class="mrow"><input type="checkbox" data-key="epo_fri" /><div class="mtext">Aplicada</div></div>
+                  </div>
+                </td>
+                <td>
+                  <div class="mini">
+                    <div class="mrow"><input type="checkbox" data-key="epo_sat" /><div class="mtext">—</div></div>
+                  </div>
+                </td>
+                <td>
+                  <div class="mini">
+                    <div class="mrow"><input type="checkbox" data-key="epo_sun" /><div class="mtext">—</div></div>
+                  </div>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
     <footer>
       <div>© <span id="year"></span> <span class="gold">Derechos reservados</span></div>
@@ -697,50 +704,9 @@
     </footer>
   </div>
 
-  <div class="toast" id="toast">
-    <span class="dot"></span>
-    <span class="tmsg" id="toastMsg">Guardado</span>
-  </div>
-
-  <div class="video-modal" id="videoModal" aria-hidden="false">
-    <div class="video-container">
-      <video
-        id="videoElement"
-        autoplay
-        muted
-        playsinline
-        preload="auto"
-      >
-        <source src="./video.mp4" type="video/mp4">
-        Tu navegador no soporta video HTML5.
-      </video>
-
-      <button class="video-close" id="videoClose" title="Cerrar video">✕</button>
-    </div>
-  </div>
-
   <script>
-    const DATA = {
-      a: [
-        { id:"epo2000",  name:"Eritropoyetina 2000 UI", meta:"Pedir: ‘eritropoyetina 2000 UI’ (ampolleta o jeringa prellenada)", tags:["sc","req"] },
-        { id:"fosfonema",name:"Fosfonema",             meta:"Pedir: ‘Fosfonema’ enema", tags:["req"] },
-        { id:"renegy500",name:"Renegy 500 ml",         meta:"Pedir: ‘Renegy 500 ml’ (solución intravenosa)", tags:["iv","req"] },
-        { id:"ziplo",    name:"Ziplo",                 meta:"Pedir: ‘Ziplo’ Jarabe adulto", tags:["req"] }
-      ],
-      b: [
-        { id:"kabiven",  name:"Kabiven (nutrición parenteral)", meta:"Pedir: ‘Kabiven’ (bolsa de nutrición parenteral, según receta)", tags:["iv","req"] },
-        { id:"multiv",   name:"Multivitamínico intravenoso",     meta:"Pedir: ‘multivitamínico IV’ (ampolleta / frasco ámpula)", tags:["iv"] },
-        { id:"vitc",     name:"Vitamina C intravenosa",          meta:"Pedir: ‘vitamina C IV’ (ampolleta)", tags:["iv"] },
-        { id:"ertapenem",name:"Ertapenem 1 g",                   meta:"Pedir: ‘ertapenem 1 g’ (frasco ámpula)", tags:["iv","req"] },
-        { id:"linezolid",name:"Linezolid 600 mg",                meta:"Pedir: ‘linezolid 600 mg’ (tabletas o solución IV, según receta)", tags:["req"] },
-        { id:"zydo",     name:"Zydo (jarabe)",                   meta:"Pedir: ‘Zydo jarabe’ (según receta)", tags:[] },
-        { id:"Agua inyectable",  name:"Agua inyectable 7 L",        meta:"Pedir: ‘Agua estéril para inyección’", tags:["iv"] },
-        { id:"Jabón quirúrgico", name:"Jabón quirúrgico 33 ml",          meta:"Pedir: jabón quirúrgico 33 ml’", tags:[] }
-      ]
-    };
-
-    const STORAGE_KEY = "meds_checklist_gold_magic_v2";
-    const state = loadState();
+    // Guardado simple para no perder marcas (si no quieres, lo quitamos)
+    const STORAGE_KEY = "meds_calendar_letter_v1";
 
     function loadState(){
       try{
@@ -752,294 +718,32 @@
     }
     function saveState(){
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      toast("Guardado ✅");
     }
 
-    const listA = document.getElementById("listA");
-    const listB = document.getElementById("listB");
-    const search = document.getElementById("search");
+    const state = loadState();
 
-    const countA = document.getElementById("countA");
-    const countB = document.getElementById("countB");
-    const countAll = document.getElementById("countAll");
-    const percent = document.getElementById("percent");
-    const barFill = document.getElementById("barFill");
-    const foundText = document.getElementById("foundText");
-    const leftText = document.getElementById("leftText");
+    function bindChecks(){
+      document.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb => {
+        const k = cb.getAttribute("data-key");
+        cb.checked = !!state.checked[k];
 
-    function tagHtml(tag){
-      if(tag === "req") return '<span class="tag req">Receta</span>';
-      if(tag === "iv")  return '<span class="tag iv">IV</span>';
-      if(tag === "sc")  return '<span class="tag sc">Subcutánea</span>';
-      return '';
-    }
-
-    function escapeHtml(s){
-      return String(s)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    function render(){
-      const q = (search.value || "").trim().toLowerCase();
-      listA.innerHTML = "";
-      listB.innerHTML = "";
-
-      const renderList = (items, mount) => {
-        items.forEach(item => {
-          const haystack = (item.name + " " + (item.meta || "")).toLowerCase();
-          if(q && !haystack.includes(q)) return;
-
-          const checked = !!state.checked[item.id];
-          const el = document.createElement("div");
-          el.className = "item" + (checked ? " done" : "");
-          el.setAttribute("data-id", item.id);
-
-          el.innerHTML = `
-            <div class="check" role="checkbox" aria-checked="${checked}" tabindex="0" title="Marcar / desmarcar">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M20 6L9 17l-5-5" stroke="rgba(243,244,247,.95)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="content">
-              <p class="name">${escapeHtml(item.name)}</p>
-              <p class="meta">${escapeHtml(item.meta || "")}</p>
-              <div class="tags">${(item.tags || []).map(tagHtml).join("")}</div>
-            </div>
-          `;
-
-          el.addEventListener("click", (ev) => {
-            if (window.getSelection && String(window.getSelection()).length > 0) return;
-            const wasChecked = !!state.checked[item.id];
-            toggle(item.id);
-            const nowChecked = !wasChecked;
-            if (nowChecked) magicSpark(el, ev);
-          });
-
-          el.addEventListener("keydown", (ev) => {
-            if(ev.key === "Enter" || ev.key === " "){
-              ev.preventDefault();
-              const wasChecked = !!state.checked[item.id];
-              toggle(item.id);
-              const nowChecked = !wasChecked;
-              if (nowChecked) magicSpark(el, null);
-            }
-          });
-
-          mount.appendChild(el);
+        cb.addEventListener("change", () => {
+          state.checked[k] = cb.checked;
+          saveState();
         });
-      };
-
-      renderList(DATA.a, listA);
-      renderList(DATA.b, listB);
-
-      updateStats();
+      });
     }
 
-    function toggle(id){
-      state.checked[id] = !state.checked[id];
-      saveState();
-      render();
-    }
-
-    function updateStats(){
-      const all = [...DATA.a, ...DATA.b];
-      const total = all.length;
-      const found = all.filter(x => !!state.checked[x.id]).length;
-
-      const aFound = DATA.a.filter(x => !!state.checked[x.id]).length;
-      const bFound = DATA.b.filter(x => !!state.checked[x.id]).length;
-
-      countA.textContent = `${aFound}/${DATA.a.length}`;
-      countB.textContent = `${bFound}/${DATA.b.length}`;
-      countAll.textContent = `${found}/${total}`;
-
-      const p = total ? Math.round((found/total)*100) : 0;
-      percent.textContent = `${p}%`;
-      barFill.style.width = `${p}%`;
-
-      foundText.textContent = String(found);
-      leftText.textContent = String(total - found);
-    }
-
-    function magicSpark(el, ev){
-      const rect = el.getBoundingClientRect();
-      let x = rect.width * 0.22;
-      let y = rect.height * 0.40;
-
-      if (ev && typeof ev.clientX === "number"){
-        x = ev.clientX - rect.left;
-        y = ev.clientY - rect.top;
-      }
-
-      el.style.setProperty("--sx", x + "px");
-      el.style.setProperty("--sy", y + "px");
-
-      el.classList.remove("spark");
-      void el.offsetWidth;
-      el.classList.add("spark");
-
-      const N = 10;
-      for(let i=0;i<N;i++){
-        const p = document.createElement("span");
-        p.className = "sparkle";
-
-        const ang = (Math.PI * 2) * (i / N) + (Math.random() * 0.35);
-        const dist = 30 + Math.random() * 55;
-
-        p.style.setProperty("--x0", `${x}px`);
-        p.style.setProperty("--y0", `${y}px`);
-        p.style.setProperty("--x1", `${x + Math.cos(ang)*dist}px`);
-        p.style.setProperty("--y1", `${y + Math.sin(ang)*dist}px`);
-
-        const size = 4 + Math.random()*5;
-        p.style.width = size + "px";
-        p.style.height = size + "px";
-
-        el.appendChild(p);
-        setTimeout(() => p.remove(), 750);
-      }
-
-      setTimeout(() => el.classList.remove("spark"), 750);
-    }
-
-    document.getElementById("btnClear").addEventListener("click", () => {
-      if(!confirm("¿Seguro que quieres desmarcar todo?")) return;
+    function clearAll(){
+      if(!confirm("¿Seguro que quieres limpiar todas las marcas?")) return;
       state.checked = {};
       saveState();
-      render();
-      toast("Lista limpia 🧼");
-    });
-
-    document.getElementById("btnMarkAll").addEventListener("click", () => {
-      [...DATA.a, ...DATA.b].forEach(x => state.checked[x.id] = true);
-      saveState();
-      render();
-      toast("Todo marcado ✅");
-    });
-
-    document.getElementById("btnCopyAll").addEventListener("click", async () => {
-      const text = buildText({ onlyRemaining: false });
-      await copyToClipboard(text);
-      toast("Lista completa copiada 📋");
-    });
-
-    document.getElementById("btnCopyRemaining").addEventListener("click", async () => {
-      const text = buildText({ onlyRemaining: true });
-      await copyToClipboard(text);
-      toast("Pendientes copiados 📋");
-    });
-
-    search.addEventListener("input", render);
-
-    function buildText({ onlyRemaining }){
-      const lines = [];
-      const section = (title, items) => {
-        const arr = onlyRemaining ? items.filter(x => !state.checked[x.id]) : items;
-        if(arr.length === 0) return;
-        lines.push(title);
-        arr.forEach(x => lines.push(`- ${x.name}`));
-        lines.push("");
-      };
-      section("LISTA 1", DATA.a);
-      section("LISTA 2", DATA.b);
-      return lines.join("\n").trim();
+      document.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb => cb.checked = false);
     }
-
-    async function copyToClipboard(text){
-      try{
-        await navigator.clipboard.writeText(text);
-      }catch(_){
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        ta.remove();
-      }
-    }
-
-    const toastEl = document.getElementById("toast");
-    const toastMsg = document.getElementById("toastMsg");
-    let toastTimer = null;
-
-    function toast(msg){
-      toastMsg.textContent = msg;
-      toastEl.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1600);
-    }
+    window.clearAll = clearAll;
 
     document.getElementById("year").textContent = new Date().getFullYear();
-
-    // ====== VIDEO INTRO (autoplay) ======
-    const videoModal = document.getElementById("videoModal");
-    const video = document.getElementById("videoElement");
-    const videoClose = document.getElementById("videoClose");
-
-    function showVideo(){
-      if(!videoModal || !video) return;
-      document.body.classList.add("video-lock");
-      videoModal.style.display = "flex";
-      videoModal.classList.remove("fade-out");
-
-      // intenta autoplay (en móvil solo funciona muted)
-      const p = video.play();
-      if(p && typeof p.catch === "function"){
-        p.catch(() => {
-          // si el navegador bloquea autoplay, muestra un tap-to-play
-          // (sin inventar UI compleja: simplemente dejamos controles)
-          video.setAttribute("controls", "controls");
-        });
-      }
-    }
-
-    function closeVideo(){
-      if(!videoModal || !video) return;
-
-      videoModal.classList.add("fade-out");
-      setTimeout(() => {
-        video.pause();
-        video.currentTime = 0;
-        videoModal.style.display = "none";
-        document.body.classList.remove("video-lock");
-      }, 280);
-    }
-
-    // cerrar al terminar
-    video.addEventListener("ended", closeVideo);
-
-    // cerrar con botón
-    videoClose.addEventListener("click", closeVideo);
-
-    // cerrar con ESC
-    window.addEventListener("keydown", (e) => {
-      if(e.key === "Escape" && videoModal.style.display !== "none"){
-        closeVideo();
-      }
-    });
-
-    // click fuera del video
-    videoModal.addEventListener("click", (e) => {
-      if(e.target === videoModal) closeVideo();
-    });
-
-    // opcional: si el usuario toca el video, intentamos fullscreen (solo si deja)
-    video.addEventListener("click", async () => {
-      try{
-        if(video.requestFullscreen && !document.fullscreenElement){
-          await video.requestFullscreen();
-        }
-      }catch(_){}
-    });
-
-    // arrancar al cargar
-    window.addEventListener("load", showVideo);
-
-    render();
+    bindChecks();
   </script>
 </body>
 </html>
