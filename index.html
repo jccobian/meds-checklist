@@ -405,6 +405,132 @@
     /* compacta los textos dentro de celdas */
     table.weekview .mtext{ font-size: 13px; }
 
+    /* =========================
+       SEMANA: DESKTOP full width
+       ========================= */
+    .weekly.full-bleed{
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+
+    .table-wrap{
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* tabla ancha real, no "encogida" */
+    table.weekview{
+      width: max-content;
+      min-width: 1280px; /* 7 días + bloque sí o sí */
+      border-collapse: collapse;
+    }
+
+    /* cada día con ancho fijo */
+    table.weekview th:not(.sticky-col),
+    table.weekview td:not(.sticky-col){
+      min-width: 170px;
+    }
+
+    /* sticky de "Bloque" */
+    table.weekview th.sticky-col,
+    table.weekview td.sticky-col{
+      position: sticky;
+      left: 0;
+      z-index: 5;
+      background: rgba(0,0,0,0.28);
+      backdrop-filter: blur(6px);
+    }
+
+    /* =========================
+       SEMANA: MÓVIL modo tarjetas
+       ========================= */
+    @media (max-width: 820px){
+      /* reduce padding del full-bleed en móvil */
+      .weekly.full-bleed{
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      /* ocultamos tabla en móvil */
+      .table-wrap{ display:none; }
+
+      /* mostramos tarjetas */
+      .week-cards{
+        display:grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .day-card{
+        border: 1px solid rgba(255,255,255,0.10);
+        border-radius: 16px;
+        background: rgba(0,0,0,0.18);
+        padding: 12px;
+      }
+
+      .day-card .dh{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.10);
+        margin-bottom: 10px;
+      }
+
+      .day-card .dh strong{
+        font-size: 16px;
+        letter-spacing: .2px;
+      }
+
+      .day-card .today-pill{
+        font-size: 12px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(214,179,90,0.30);
+        color: rgba(241,211,139,0.95);
+        background: rgba(214,179,90,0.10);
+        display:none;
+      }
+      .day-card.is-today .today-pill{ display:inline-block; }
+
+      .day-card .sec{
+        margin-top: 10px;
+      }
+
+      .day-card .sec-title{
+        font-weight: 850;
+        color: rgba(241,211,139,0.95);
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      .day-card .mrow{
+        display:flex;
+        gap:10px;
+        align-items:flex-start;
+        padding: 6px 0;
+      }
+
+      .wkmark{
+        display:inline-block;
+        min-width: 18px;
+        text-align:center;
+        font-weight: 900;
+        color: var(--gold2);
+        border: 1px solid rgba(214,179,90,0.22);
+        border-radius: 6px;
+        padding: 2px 6px;
+        user-select:none;
+      }
+
+      .mtext{ font-size: 14px; line-height: 1.2; }
+    }
+
     footer{
       margin-top: 4px;
       padding: 14px 10px 10px;
@@ -644,7 +770,7 @@
         <span class="badge">Marcas arriba → aquí solo se refleja ✅</span>
       </div>
 
-      <div class="weekly">
+      <div class="weekly full-bleed">
         <div class="table-wrap">
           <table class="weekview">
             <thead>
@@ -726,6 +852,9 @@
             </tbody>
           </table>
         </div>
+
+        <!-- MÓVIL: tarjetas por día (se llenan por JS) -->
+        <div class="week-cards" id="weekCards"></div>
       </div>
     </section>
 
@@ -876,6 +1005,11 @@
       return map[d.getDay()];
     }
 
+    const DAY_LABELS = {
+      mon:"Lunes", tue:"Martes", wed:"Miércoles", thu:"Jueves",
+      fri:"Viernes", sat:"Sábado", sun:"Domingo"
+    };
+
     function renderWeekView(){
       const today = getTodayDayKey();
 
@@ -924,6 +1058,70 @@
           if(tdToday) tdToday.classList.add("is-today");
         });
       }
+
+      // 4) Renderizar tarjetas móviles
+      renderWeekCards();
+    }
+
+    function renderWeekCards(){
+      const mount = document.getElementById("weekCards");
+      if(!mount) return;
+
+      const today = getTodayDayKey();
+      const days = ["mon","tue","wed","thu","fri","sat","sun"];
+
+      mount.innerHTML = "";
+
+      days.forEach(day => {
+        const isToday = (day === today);
+
+        const card = document.createElement("div");
+        card.className = "day-card" + (isToday ? " is-today" : "");
+
+        card.innerHTML = `
+          <div class="dh">
+            <strong>${DAY_LABELS[day]}</strong>
+            <span class="today-pill">HOY</span>
+          </div>
+
+          <div class="sec">
+            <div class="sec-title">Mañana</div>
+            <div class="mini" data-card-day="${day}" data-card-block="morning"></div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-title">Tarde</div>
+            <div class="mini" data-card-day="${day}" data-card-block="afternoon"></div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-title">Noche</div>
+            <div class="mini" data-card-day="${day}" data-card-block="night"></div>
+          </div>
+        `;
+
+        mount.appendChild(card);
+      });
+
+      // llenar contenido
+      document.querySelectorAll('.mini[data-card-day][data-card-block]').forEach(container => {
+        const day = container.getAttribute("data-card-day");
+        const block = container.getAttribute("data-card-block");
+        const items = ROUTINE_MAP[block] || [];
+        const isToday = (day === today);
+
+        container.innerHTML = "";
+        items.forEach(it => {
+          const done = isToday ? !!state.checked[it.key] : false;
+          const row = document.createElement("div");
+          row.className = "mrow";
+          row.innerHTML = `
+            <span class="wkmark">${done ? "✅" : "☐"}</span>
+            <div class="mtext">${it.label}</div>
+          `;
+          container.appendChild(row);
+        });
+      });
     }
 
     // =========================
