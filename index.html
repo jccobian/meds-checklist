@@ -291,10 +291,16 @@
       padding: 14px;
     }
     .table-wrap{
-      overflow:auto;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.14);
+    }
+    .table-wrap::-webkit-scrollbar{ height: 10px; }
+    .table-wrap::-webkit-scrollbar-thumb{
+      background: rgba(214,179,90,0.28);
+      border-radius: 999px;
     }
     table{
       width:100%;
@@ -348,23 +354,34 @@
 
     /* ===== Semana completa visible / scroll bien ===== */
     table.weekview{
-      width: 100%;
+      width: max-content;     /* clave: deja que la tabla mida lo que necesita */
+      min-width: 1200px;      /* asegura Domingo visible */
       border-collapse: collapse;
-      table-layout: fixed; /* clave: reparte columnas */
-      min-width: 1100px;   /* asegura 7 días sin apretar feo */
     }
 
-    table.weekview th, table.weekview td{
-      width: calc((100% - 160px)/7);
-    }
-
+    /* fija la primera columna (Bloque) */
     table.weekview th.sticky-col,
     table.weekview td.sticky-col{
       position: sticky;
       left: 0;
-      z-index: 3;
-      background: rgba(0,0,0,0.22);
+      z-index: 5;
+      background: rgba(0,0,0,0.28);
       backdrop-filter: blur(6px);
+    }
+
+    /* columnas del resto: consistentes */
+    table.weekview th:not(.sticky-col),
+    table.weekview td:not(.sticky-col){
+      min-width: 150px;       /* cada día ancho fijo -> no se corta */
+    }
+
+    /* resalta el día actual */
+    th.is-today{
+      outline: 2px solid rgba(214,179,90,0.35);
+      outline-offset: -2px;
+    }
+    td.is-today{
+      background: rgba(214,179,90,0.06);
     }
 
     /* marca semanal solo lectura */
@@ -852,15 +869,27 @@
       ]
     };
 
+    function getTodayDayKey(){
+      // Lunes=mon ... Domingo=sun
+      const d = new Date();
+      const map = ["sun","mon","tue","wed","thu","fri","sat"];
+      return map[d.getDay()];
+    }
+
     function renderWeekView(){
-      // 1) Render rutina (mañana/tarde/noche) por día pero SOLO como ✅/☐
+      const today = getTodayDayKey();
+
+      // 1) Rutina: SOLO hoy se refleja con ✅/☐; otros días quedan ☐
       document.querySelectorAll(".mini[data-day][data-block]").forEach(container => {
+        const day = container.getAttribute("data-day");
         const block = container.getAttribute("data-block");
         const items = ROUTINE_MAP[block] || [];
         container.innerHTML = "";
 
         items.forEach(it => {
-          const done = !!state.checked[it.key];
+          const isToday = (day === today);
+          const done = isToday ? !!state.checked[it.key] : false;
+
           const row = document.createElement("div");
           row.className = "mrow";
           row.innerHTML = `
@@ -871,11 +900,30 @@
         });
       });
 
-      // 2) Render eritropoyetina (epo_) como ✅/☐ (ya están en HTML)
+      // 2) Eritropoyetina (epo_) es semanal real, sí se muestra por su día (L-M-V)
       document.querySelectorAll(".wkmark[data-key]").forEach(span => {
         const k = span.getAttribute("data-key");
         span.textContent = state.checked[k] ? "✅" : "☐";
       });
+
+      // 3) Resalta columna de hoy
+      const days = ["mon","tue","wed","thu","fri","sat","sun"];
+      const todayKey = getTodayDayKey();
+      const idx = days.indexOf(todayKey);
+      if(idx >= 0){
+        // +1 por la columna "Bloque"
+        const col = idx + 2;
+
+        document.querySelectorAll("table.weekview thead th").forEach(th => th.classList.remove("is-today"));
+        const thToday = document.querySelector(`table.weekview thead th:nth-child(${col})`);
+        if(thToday) thToday.classList.add("is-today");
+
+        document.querySelectorAll("table.weekview tbody tr").forEach(tr => {
+          tr.querySelectorAll("td").forEach(td => td.classList.remove("is-today"));
+          const tdToday = tr.querySelector(`td:nth-child(${col})`);
+          if(tdToday) tdToday.classList.add("is-today");
+        });
+      }
     }
 
     // =========================
