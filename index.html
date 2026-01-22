@@ -1,38 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Calendario de Medicamentos (Impresión Carta)</title>
+  <title>Calendario de medicamentos</title>
+
   <link rel="icon" type="image/x-icon" href="./logo.ico" />
 
   <style>
     :root{
       --bg0:#07080b;
+      --bg1:#0b0c10;
       --bg2:#0d0f16;
-      --paper:#0b0d12;
 
       --text:#f3f4f7;
-      --muted:#c7cad3;
+      --muted:#b2b6c2;
 
       --gold:#d6b35a;
       --gold2:#f1d38b;
 
       --line: rgba(255,255,255,0.10);
-      --shadow2: 0 14px 34px rgba(0,0,0,0.45);
+      --line2: rgba(255,255,255,0.08);
 
+      --shadow: 0 10px 26px rgba(0,0,0,0.40);
       --r:18px;
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
 
     body{
       margin:0;
       color:var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, Helvetica, sans-serif;
       background:
-        radial-gradient(900px 520px at 20% 0%, rgba(214,179,90,0.14), transparent 58%),
+        radial-gradient(900px 520px at 20% 0%, rgba(214,179,90,0.15), transparent 58%),
         radial-gradient(900px 520px at 100% 10%, rgba(214,179,90,0.10), transparent 62%),
         radial-gradient(1100px 700px at 60% 120%, rgba(241,211,139,0.08), transparent 65%),
         linear-gradient(180deg, var(--bg0), var(--bg2));
@@ -47,7 +49,7 @@
       position:fixed;
       inset:0;
       pointer-events:none;
-      background: url("./logo.png") center 22% / 540px auto no-repeat;
+      background: url("./logo.png") center 22% / 520px auto no-repeat;
       opacity: 0.035;
       filter: saturate(1.1) contrast(1.05);
       transform: translateZ(0);
@@ -65,9 +67,10 @@
 
     .page{
       width:100%;
-      max-width: 1020px;
+      max-width: 980px;
       display:flex;
       flex-direction:column;
+      min-height: calc(100vh - 44px);
       gap: 16px;
       position:relative;
     }
@@ -79,9 +82,9 @@
       gap:14px;
       padding: 16px 16px;
       border-radius: var(--r);
-      border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
-      box-shadow: var(--shadow2);
+      border: 1px solid var(--line2);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      box-shadow: var(--shadow);
       backdrop-filter: blur(12px);
     }
 
@@ -92,8 +95,8 @@
       min-width: 280px;
     }
     .brand img{
-      width: 68px;
-      height: 68px;
+      width: 64px;
+      height: 64px;
       border-radius: 14px;
       object-fit: contain;
       background: rgba(255,255,255,0.03);
@@ -104,33 +107,35 @@
     .brand .t{display:flex; flex-direction:column; gap:6px;}
     .brand h1{
       margin:0;
-      font-size: 20px;          /* MÁS GRANDE */
-      letter-spacing: .2px;
+      font-size: 18px;
+      letter-spacing: .25px;
       font-weight: 820;
       line-height: 1.1;
     }
     .pill{
       width: fit-content;
-      font-size: 14px;          /* MÁS GRANDE */
+      font-size: 13px;
       color: var(--muted);
-      padding: 8px 12px;
+      padding: 7px 11px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.10);
       background: rgba(0,0,0,0.25);
     }
 
-    .actions{
+    .controls{
       display:flex;
+      align-items:center;
       gap:10px;
       flex-wrap:wrap;
       justify-content:flex-end;
+      width:100%;
     }
 
     button{
       border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.22);
+      background: rgba(0,0,0,0.24);
       color: var(--text);
-      padding: 12px 14px;
+      padding: 10px 12px;
       border-radius: 14px;
       cursor:pointer;
       transition: .16s ease;
@@ -139,11 +144,11 @@
       gap:8px;
       user-select:none;
       white-space:nowrap;
-      font-size: 14px;
+      font-weight: 700;
     }
     button:hover{
       transform: translateY(-1px);
-      background: rgba(0,0,0,0.30);
+      background: rgba(0,0,0,0.32);
       border-color: rgba(214,179,90,0.28);
       box-shadow: 0 10px 20px rgba(0,0,0,0.32);
     }
@@ -160,16 +165,20 @@
 
     .grid{
       display:grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1.15fr .85fr;
       gap:16px;
       align-items:start;
+      flex: 1 1 auto;
+    }
+    @media (max-width: 900px){
+      .grid{grid-template-columns: 1fr;}
     }
 
     .card{
-      border: 1px solid var(--line);
+      border: 1px solid var(--line2);
       border-radius: var(--r);
       background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-      box-shadow: var(--shadow2);
+      box-shadow: var(--shadow);
       overflow:hidden;
       backdrop-filter: blur(12px);
     }
@@ -181,19 +190,19 @@
       justify-content:space-between;
       gap:10px;
       border-bottom: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.14);
+      background: rgba(0,0,0,0.12);
     }
     .card-head h2{
       margin:0;
-      font-size: 16px; /* MÁS GRANDE */
-      letter-spacing: .25px;
+      font-size: 15px;
+      letter-spacing: .2px;
       display:flex;
       gap:10px;
       align-items:center;
-      font-weight: 850;
+      font-weight: 860;
     }
     .badge{
-      font-size: 13px;
+      font-size: 12px;
       padding: 6px 10px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.12);
@@ -201,160 +210,285 @@
       background: rgba(0,0,0,0.20);
     }
     .badge.gold{
-      border-color: rgba(214,179,90,0.32);
+      border-color: rgba(214,179,90,0.30);
       color: rgba(241,211,139,0.95);
       background: rgba(214,179,90,0.10);
     }
 
-    /* ===== RUTINA (mañana/tarde/noche) ===== */
-    .routine{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      padding: 14px;
-    }
-    @media (max-width: 860px){
-      .routine{ grid-template-columns: 1fr; }
-    }
-
-    .block{
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 16px;
-      background: rgba(0,0,0,0.16);
-      overflow:hidden;
-    }
-    .block .bh{
-      padding: 12px 12px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      border-bottom: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.16);
-    }
-    .block .bh strong{
-      font-size: 16px;
-      letter-spacing: .2px;
-    }
-    .block .bh span{
-      font-size: 13px;
-      color: var(--muted);
-    }
-    .block .bl{
-      padding: 10px 12px 14px;
+    .section{
+      padding: 12px 12px 6px;
       display:flex;
       flex-direction:column;
-      gap: 10px;
+      gap:10px;
     }
 
-    .dose{
-      display:flex;
-      align-items:flex-start;
-      gap: 10px;
-      padding: 10px 10px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.18);
-    }
-
-    /* checkbox grande para imprimir */
-    .dose input[type="checkbox"]{
-      width: 22px;
-      height: 22px;
-      accent-color: var(--gold);
-      margin-top: 2px;
-      flex: 0 0 auto;
-      cursor:pointer;
-    }
-
-    .dose .txt{
-      display:flex;
-      flex-direction:column;
-      gap: 4px;
-      min-width:0;
-    }
-    .dose .name{
-      margin:0;
-      font-size: 16px;     /* MUY LEGIBLE */
-      font-weight: 850;
-      line-height: 1.15;
-      word-break: break-word;
-    }
-    .dose .note{
-      margin:0;
-      font-size: 14px;     /* MUY LEGIBLE */
-      color: var(--muted);
-      line-height: 1.25;
-    }
-
-    /* ===== TABLA SEMANAL ===== */
-    .weekly{
-      padding: 14px;
-    }
-    .table-wrap{
-      overflow:auto;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(0,0,0,0.14);
-    }
-    table{
-      width:100%;
-      border-collapse:collapse;
-      min-width: 920px; /* para que en escritorio se vea completo */
-    }
-    th, td{
-      border-bottom: 1px solid rgba(255,255,255,0.10);
-      border-right: 1px solid rgba(255,255,255,0.08);
-      padding: 12px 10px;
-      vertical-align:top;
-    }
-    th:last-child, td:last-child{ border-right: none; }
-    th{
-      text-align:left;
-      font-size: 14px;
-      color: rgba(241,211,139,0.95);
-      background: rgba(214,179,90,0.08);
-      letter-spacing: .2px;
-    }
-    td{
-      font-size: 14px;
-      color: var(--text);
-    }
-    .cell-title{
-      font-weight: 850;
-      font-size: 14px;
-      margin-bottom: 6px;
-      color: rgba(241,211,139,0.95);
-    }
-    .mini{
-      display:flex;
-      flex-direction:column;
-      gap: 8px;
-    }
-    .mini .mrow{
-      display:flex;
-      gap: 8px;
-      align-items:flex-start;
-    }
-    .mini input[type="checkbox"]{
-      width: 18px;
-      height: 18px;
-      accent-color: var(--gold);
-      margin-top: 2px;
-      flex:0 0 auto;
-    }
-    .mini .mtext{
-      line-height: 1.2;
-    }
-
-    footer{
-      margin-top: 4px;
-      padding: 14px 10px 10px;
+    .subhead{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      color: rgba(199,202,211,0.95);
+      padding: 10px 10px;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 14px;
+      background: rgba(0,0,0,0.18);
+    }
+    .subhead .left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight: 900;
+      letter-spacing:.2px;
+    }
+    .subhead .right{
+      color: var(--muted);
+      font-size: 12px;
+      text-align:right;
+    }
+
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      padding-bottom: 8px;
+    }
+
+    .item{
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      padding: 14px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.18);
+      transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease, opacity .14s ease;
+      position:relative;
+      overflow:hidden;
+      isolation:isolate;
+      cursor:pointer;
+    }
+    .item:hover{
+      border-color: rgba(214,179,90,0.22);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(0,0,0,0.30);
+    }
+
+    .item::after{
+      content:"";
+      position:absolute;
+      left: var(--sx, 50%);
+      top: var(--sy, 50%);
+      width: 12px;
+      height: 12px;
+      transform: translate(-50%, -50%) scale(0);
+      border-radius: 999px;
+      pointer-events:none;
+      opacity: 0;
+      background:
+        radial-gradient(circle,
+          rgba(241,211,139,0.85) 0%,
+          rgba(214,179,90,0.55) 25%,
+          rgba(214,179,90,0.20) 45%,
+          transparent 65%);
+      z-index: 0;
+    }
+    .item.spark::after{ animation: sparkBurst 650ms ease-out forwards; }
+    @keyframes sparkBurst{
+      0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.25); }
+      15%  { opacity: 1; transform: translate(-50%, -50%) scale(2.4); }
+      55%  { opacity: 0.9; transform: translate(-50%, -50%) scale(7.6); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(10.5); }
+    }
+    .sparkle{
+      position:absolute;
+      left: 0; top: 0;
+      width: 6px; height: 6px;
+      border-radius: 999px;
+      pointer-events:none;
+      background: radial-gradient(circle, rgba(241,211,139,.95), rgba(214,179,90,.4), transparent 70%);
+      filter: drop-shadow(0 0 8px rgba(214,179,90,.25));
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.6);
+      animation: sparkleFly 650ms ease-out forwards;
+      z-index: 1;
+    }
+    @keyframes sparkleFly{
+      0%   { opacity: 0; transform: translate(var(--x0), var(--y0)) scale(0.6); }
+      15%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--x1), var(--y1)) scale(0.2); }
+    }
+
+    .item.done{
+      opacity: .82;
+      border-color: rgba(214,179,90,0.26);
+    }
+    .item.done::before{
+      content:"";
+      position:absolute;
+      inset:-40px;
+      background: radial-gradient(520px 170px at 10% 10%, rgba(214,179,90,0.10), transparent 60%);
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .check{
+      flex:0 0 auto;
+      width: 28px;
+      height: 28px;
+      margin-top: 2px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(0,0,0,0.20);
+      display:grid;
+      place-items:center;
+      z-index: 2;
+    }
+    .item.done .check{
+      border-color: rgba(214,179,90,0.55);
+      background: rgba(214,179,90,0.14);
+      box-shadow: 0 0 0 4px rgba(214,179,90,0.12);
+    }
+    .check svg{
+      width: 16px; height: 16px;
+      opacity: 0;
+      transform: scale(.85);
+      transition: .16s ease;
+    }
+    .item.done .check svg{
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .content{
+      flex:1 1 auto;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:0;
+      z-index: 2;
+    }
+    .name{
+      margin:0;
+      font-weight: 900;
+      font-size: 16px;
+      line-height: 1.22;
+      word-break: break-word;
+    }
+    .meta{
+      margin:0;
+      color: var(--muted);
       font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .tagline{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top: 2px;
+    }
+    .tag{
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.18);
+      color: var(--muted);
+      font-weight: 800;
+    }
+    .tag.gold{
+      border-color: rgba(214,179,90,0.30);
+      color: rgba(241,211,139,0.95);
+      background: rgba(214,179,90,0.10);
+    }
+
+    .side{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      position:sticky;
+      top:16px;
+    }
+    @media (max-width: 900px){ .side{ position:static; } }
+
+    .stats{ padding: 16px; display:flex; flex-direction:column; gap:12px; }
+    .row{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-size: 13px; color: var(--muted); }
+    .row strong{ color: var(--text); }
+
+    .bar{
+      width:100%;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .bar > div{
+      height:100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(214,179,90,0.95), rgba(241,211,139,0.95));
+      transition: width .22s ease;
+      box-shadow: 0 0 18px rgba(214,179,90,0.22);
+    }
+
+    .tip{
+      padding: 14px 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      border-top: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.10);
+    }
+
+    .week{
+      display:grid;
+      grid-template-columns: 1.1fr repeat(7, 1fr);
+      gap:10px;
+      padding: 12px;
+    }
+    .week .th{
+      font-weight: 900;
+      color: rgba(241,211,139,0.95);
+      font-size: 13px;
+      letter-spacing: .2px;
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(214,179,90,0.18);
+      background: rgba(0,0,0,0.18);
+      text-align:center;
+    }
+    .week .th.left{ text-align:left; color: var(--text); border-color: rgba(255,255,255,0.12); }
+    .cell{
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.16);
+      min-height: 44px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .cell.left{
+      justify-content:flex-start;
+      color: var(--text);
+      font-weight: 900;
+    }
+    .cell button{
+      width: 100%;
+      justify-content:center;
+      padding: 10px 10px;
+      border-radius: 12px;
+    }
+
+    footer{
+      margin-top: 4px;
+      padding: 14px 10px 6px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      color: rgba(178,182,194,0.92);
+      font-size: 12px;
       border-top: 1px solid rgba(255,255,255,0.10);
       text-shadow: 0 6px 18px rgba(0,0,0,0.35);
     }
@@ -362,338 +496,296 @@
     .sep{ width:6px;height:6px;border-radius:999px; background: rgba(214,179,90,0.65); box-shadow: 0 0 0 4px rgba(214,179,90,0.10); }
     .gold{ color: rgba(241,211,139,0.95); }
 
-    /* ===== IMPRESIÓN (Carta) ===== */
-    @page { size: letter; margin: 0.55in; }
+    .toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.60);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      padding: 10px 14px;
+      box-shadow: 0 18px 44px rgba(0,0,0,0.55);
+      opacity: 0;
+      pointer-events:none;
+      transition: .18s ease;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      max-width: calc(100% - 24px);
+      backdrop-filter: blur(10px);
+      z-index: 9999;
+    }
+    .toast.show{ opacity: 1; transform: translateX(-50%) translateY(-6px); }
+    .toast .dot{ width: 10px; height: 10px; border-radius: 999px; background: var(--gold); box-shadow: 0 0 0 4px rgba(214,179,90,0.14); }
+    .toast .tmsg{ font-size: 13px; white-space: nowrap; overflow:hidden; text-overflow: ellipsis; color: var(--text); }
 
-    @media print{
+    @media (max-width: 600px){
       body{
-        padding:0;
-        background: #fff !important;
-        color: #111 !important;
+        padding: 14px;
+        background: #0b0c10 !important;
       }
       body::before, body::after{ display:none !important; }
-      .page{ max-width: none; }
-      header, .card, footer{
+
+      header{
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 16px;
+      }
+
+      .brand{
+        min-width: 0;
+        width: 100%;
+      }
+      .brand img{
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+      }
+      .brand h1{
+        font-size: 22px !important;
+        line-height: 1.15;
+      }
+      .pill{
+        font-size: 14px;
+        padding: 8px 14px;
+      }
+
+      .controls{
+        justify-content: stretch;
+      }
+      .controls button{
+        flex: 1 1 calc(50% - 6px);
+        justify-content:center;
+        padding: 12px 12px;
+        border-radius: 16px;
+        font-size: 15px;
+      }
+
+      .card{
+        background: #111217 !important;
         box-shadow: none !important;
         backdrop-filter: none !important;
       }
-      header, .card{
-        border: 1px solid #ddd !important;
+
+      .card-head h2{ font-size: 18px !important; }
+
+      .subhead .left{ font-size: 17px; }
+      .subhead .right{ font-size: 13px; }
+
+      .item{
+        padding: 18px 16px;
+        border-radius: 18px;
+        gap: 14px;
+      }
+      .check{
+        width: 32px;
+        height: 32px;
+        border-radius: 12px;
+      }
+      .name{
+        font-size: 18px !important;
+        line-height: 1.25;
+      }
+      .meta{
+        font-size: 14px !important;
+        line-height: 1.45;
+      }
+
+      .week{
+        grid-template-columns: 1fr;
+      }
+      .week .th{ display:none; }
+      .week .cell.left{
+        justify-content:center;
+        font-size: 16px;
+      }
+      .cell{
+        min-height: 52px;
+      }
+
+      footer{
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 8px;
+        padding-bottom: 12px;
+        font-size: 14px;
+      }
+    }
+
+    @media print{
+      body{
         background: #fff !important;
-        color: #111 !important;
+        color: #000 !important;
+        padding: 0 !important;
       }
-      .pill, .badge{
-        border: 1px solid #ccc !important;
-        background: #f7f7f7 !important;
-        color: #333 !important;
+
+      body::before, body::after{ display:none !important; }
+
+      header, footer, .controls, .tip, .toast, .side{ display:none !important; }
+
+      .page{
+        max-width: none !important;
+        min-height: auto !important;
+        gap: 10px !important;
       }
-      .badge.gold, th{
-        color: #6a4b00 !important;
-        background: #fff7e6 !important;
-        border-color: #e7d3a6 !important;
+
+      .grid{
+        display:block !important;
       }
-      .dose, .block, .table-wrap{
-        border-color: #ddd !important;
+
+      .card{
+        border: none !important;
+        box-shadow: none !important;
         background: #fff !important;
       }
-      .dose .note, footer{ color:#333 !important; }
-      .actions{ display:none !important; } /* oculta botones al imprimir */
-      table{ min-width: 0; }             /* imprime ajustado */
+
+      .card-head{
+        background: #fff !important;
+        border: none !important;
+        padding: 8px 0 6px !important;
+      }
+      .card-head h2{
+        font-size: 18px !important;
+        color: #000 !important;
+      }
+      .badge{ display:none !important; }
+
+      .subhead{
+        border: 1px solid #000 !important;
+        background: #fff !important;
+      }
+      .subhead .right{ color:#333 !important; }
+
+      .item{
+        border: 1px solid #000 !important;
+        border-radius: 6px !important;
+        background: #fff !important;
+        box-shadow: none !important;
+        padding: 12px 10px !important;
+        page-break-inside: avoid;
+      }
+
+      .check{
+        border: 2px solid #000 !important;
+        background: #fff !important;
+        box-shadow: none !important;
+      }
+      .item.done .check svg{ opacity: 1 !important; }
+
+      .name{ color:#000 !important; font-size: 16px !important; }
+      .meta{ color:#333 !important; font-size: 12px !important; }
+
+      .week{
+        grid-template-columns: 1.2fr repeat(7, 1fr) !important;
+      }
+      .week .th{
+        display:flex !important;
+        color:#000 !important;
+        background:#fff !important;
+        border: 1px solid #000 !important;
+      }
+      .cell{
+        border: 1px solid #000 !important;
+        background:#fff !important;
+      }
+
+      @page { size: Letter; margin: 0.6in; }
     }
   </style>
 </head>
 
 <body>
   <div class="page">
-
     <header>
       <div class="brand">
-        <img src="./logo.png" alt="Logo" />
+        <img src="./logo.png" alt="Cobian PC" />
         <div class="t">
           <h1>Calendario de medicamentos</h1>
-          <div class="pill">Impresión Carta • Marcar dosis (checkbox)</div>
+          <div class="pill">Impresión Carta • Marca dosis (checkbox) • Se guarda automáticamente</div>
         </div>
       </div>
 
-      <div class="actions">
-        <button class="btn-gold" onclick="window.print()">🖨️ Imprimir</button>
-        <button class="btn-danger" onclick="clearAll()">🧼 Limpiar marcas</button>
+      <div class="controls">
+        <button class="btn-gold" id="btnPrint">🖨️ Imprimir</button>
+        <button class="btn-gold" id="btnMarkToday">✅ Marcar rutina del día</button>
+        <button class="btn-danger" id="btnClear">🧼 Limpiar todo</button>
       </div>
     </header>
 
-    <!-- RUTINA DIARIA -->
-    <section class="card">
-      <div class="card-head">
-        <h2>🕒 Rutina diaria</h2>
-        <span class="badge gold">Mañana • Tarde • Noche</span>
-      </div>
-
-      <div class="routine">
-
-        <!-- MAÑANA -->
-        <div class="block">
-          <div class="bh">
-            <strong>🌤️ Mañana</strong>
-            <span>después / según indique</span>
-          </div>
-          <div class="bl">
-
-            <div class="dose">
-              <input type="checkbox" data-key="amiodarona_am" />
-              <div class="txt">
-                <p class="name">Amiodarona (½ tableta)</p>
-                <p class="note">Mañana</p>
-              </div>
-            </div>
-
-            <div class="dose">
-              <input type="checkbox" data-key="rivaroxaban_am" />
-              <div class="txt">
-                <p class="name">Rivaroxaban 15 mg (½ tableta)</p>
-                <p class="note">Mañana</p>
-              </div>
-            </div>
-
-            <div class="dose">
-              <input type="checkbox" data-key="acido_folico_am" />
-              <div class="txt">
-                <p class="name">Ácido fólico</p>
-                <p class="note">Mañana</p>
-              </div>
-            </div>
-
-            <div class="dose">
-              <input type="checkbox" data-key="zyplo_am" />
-              <div class="txt">
-                <p class="name">Zyplo 10 ml</p>
-                <p class="note">Cada 8 horas (primera dosis en la mañana)</p>
-              </div>
-            </div>
-
-            <div class="dose">
-              <input type="checkbox" data-key="linezolid_am" />
-              <div class="txt">
-                <p class="name">Linezolid (1 tableta)</p>
-                <p class="note">Cada 12 horas • después de las comidas</p>
-              </div>
-            </div>
-
-          </div>
+    <div class="grid">
+      <main class="card">
+        <div class="card-head">
+          <h2>🕒 Rutina diaria <span class="badge gold" id="countDaily">0/0</span></h2>
+          <span class="badge">Mañana • Tarde • Noche</span>
         </div>
 
-        <!-- TARDE -->
-        <div class="block">
-          <div class="bh">
-            <strong>🌇 Tarde</strong>
-            <span>horarios</span>
+        <div class="section">
+          <div class="subhead">
+            <div class="left">🌤️ Mañana</div>
+            <div class="right">Después / según indique</div>
           </div>
-          <div class="bl">
+          <div class="list" id="listMorning"></div>
 
-            <div class="dose">
-              <input type="checkbox" data-key="omeprazol_pm" />
-              <div class="txt">
-                <p class="name">Omeprazol</p>
-                <p class="note">Tarde</p>
-              </div>
-            </div>
-
-            <div class="dose">
-              <input type="checkbox" data-key="ziplo_5pm" />
-              <div class="txt">
-                <p class="name">Ziplo 10 ml</p>
-                <p class="note">5:00 pm</p>
-              </div>
-            </div>
-
-            <div class="dose">
-              <input type="checkbox" data-key="inhalador_6pm" />
-              <div class="txt">
-                <p class="name">Inhalador</p>
-                <p class="note">6:00 pm</p>
-              </div>
-            </div>
-
+          <div class="subhead">
+            <div class="left">🌇 Tarde</div>
+            <div class="right">Horario recomendado</div>
           </div>
+          <div class="list" id="listAfternoon"></div>
+
+          <div class="subhead">
+            <div class="left">🌙 Noche</div>
+            <div class="right">Después de cenar</div>
+          </div>
+          <div class="list" id="listNight"></div>
         </div>
 
-        <!-- NOCHE -->
-        <div class="block">
-          <div class="bh">
-            <strong>🌙 Noche</strong>
-            <span>cierre del día</span>
-          </div>
-          <div class="bl">
-
-            <div class="dose">
-              <input type="checkbox" data-key="insulina_night" />
-              <div class="txt">
-                <p class="name">Insulina</p>
-                <p class="note">Noche</p>
-              </div>
-            </div>
-
-            <div class="dose">
-              <input type="checkbox" data-key="sulfato_ferroso_night" />
-              <div class="txt">
-                <p class="name">Sulfato ferroso</p>
-                <p class="note">Noche</p>
-              </div>
-            </div>
-
-            <div class="dose">
-              <input type="checkbox" data-key="zyplo_night" />
-              <div class="txt">
-                <p class="name">Zyplo</p>
-                <p class="note">Noche (siguiente dosis cada 8h)</p>
-              </div>
-            </div>
-
-            <div class="dose">
-              <input type="checkbox" data-key="linezolid_night" />
-              <div class="txt">
-                <p class="name">Linezolid (1 tableta)</p>
-                <p class="note">Después de cenar (cada 12h)</p>
-              </div>
-            </div>
-
-            <div class="dose">
-              <input type="checkbox" data-key="ertapenem_iv_night" />
-              <div class="txt">
-                <p class="name">Ertapenem IV</p>
-                <p class="note">Noche</p>
-              </div>
-            </div>
-
-            <div class="dose">
-              <input type="checkbox" data-key="eritropoyetina_mwf" />
-              <div class="txt">
-                <p class="name">Eritropoyetina</p>
-                <p class="note">Lunes • Miércoles • Viernes</p>
-              </div>
-            </div>
-
-          </div>
+        <div class="card-head">
+          <h2>📅 Calendario semanal <span class="badge gold" id="countWeekly">0/0</span></h2>
+          <span class="badge">Marcar dosis especiales</span>
         </div>
 
-      </div>
-    </section>
+        <div class="section" style="padding-top:10px;">
+          <div class="tagline" style="padding: 0 2px 6px;">
+            <span class="tag gold">Recomendado: Eritropoyetina (L-M-V)</span>
+            <span class="tag">Ertapenem IV diario (según receta)</span>
+          </div>
 
-    <!-- CALENDARIO SEMANAL -->
-    <section class="card">
-      <div class="card-head">
-        <h2>🗓️ Calendario semanal (marcar dosis especiales)</h2>
-        <span class="badge">Recomendado para: Eritropoyetina (L-M-V) y control</span>
-      </div>
-
-      <div class="weekly">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th style="width:140px;">Bloque</th>
-                <th>Lunes</th>
-                <th>Martes</th>
-                <th>Miércoles</th>
-                <th>Jueves</th>
-                <th>Viernes</th>
-                <th>Sábado</th>
-                <th>Domingo</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div class="cell-title">Mañana</div>
-                  <div style="color:var(--muted); font-size:13px;">Rutina</div>
-                </td>
-                <td colspan="7">
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="wk_amiodarona" /><div class="mtext">Amiodarona (½)</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_rivaroxaban" /><div class="mtext">Rivaroxaban 15mg (½)</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_acido_folico" /><div class="mtext">Ácido fólico</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_zyplo_am" /><div class="mtext">Zyplo 10 ml (c/8h)</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_linezolid_am" /><div class="mtext">Linezolid (1) (c/12h)</div></div>
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div class="cell-title">Tarde</div>
-                  <div style="color:var(--muted); font-size:13px;">Rutina</div>
-                </td>
-                <td colspan="7">
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="wk_omeprazol" /><div class="mtext">Omeprazol</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_ziplo_5pm" /><div class="mtext">Ziplo 10 ml (5:00 pm)</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_inhalador_6pm" /><div class="mtext">Inhalador (6:00 pm)</div></div>
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div class="cell-title">Noche</div>
-                  <div style="color:var(--muted); font-size:13px;">Rutina</div>
-                </td>
-                <td colspan="7">
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="wk_insulina" /><div class="mtext">Insulina</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_sulfato" /><div class="mtext">Sulfato ferroso</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_zyplo_night" /><div class="mtext">Zyplo (c/8h)</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_linezolid_night" /><div class="mtext">Linezolid (1) después de cenar</div></div>
-                    <div class="mrow"><input type="checkbox" data-key="wk_ertapenem" /><div class="mtext">Ertapenem IV</div></div>
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div class="cell-title">Eritropoyetina</div>
-                  <div style="color:var(--muted); font-size:13px;">L-M-V</div>
-                </td>
-                <td>
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="epo_mon" /><div class="mtext">Aplicada</div></div>
-                  </div>
-                </td>
-                <td>
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="epo_tue" /><div class="mtext">—</div></div>
-                  </div>
-                </td>
-                <td>
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="epo_wed" /><div class="mtext">Aplicada</div></div>
-                  </div>
-                </td>
-                <td>
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="epo_thu" /><div class="mtext">—</div></div>
-                  </div>
-                </td>
-                <td>
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="epo_fri" /><div class="mtext">Aplicada</div></div>
-                  </div>
-                </td>
-                <td>
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="epo_sat" /><div class="mtext">—</div></div>
-                  </div>
-                </td>
-                <td>
-                  <div class="mini">
-                    <div class="mrow"><input type="checkbox" data-key="epo_sun" /><div class="mtext">—</div></div>
-                  </div>
-                </td>
-              </tr>
-
-            </tbody>
-          </table>
+          <div class="week" id="weekGrid"></div>
         </div>
-      </div>
-    </section>
+
+        <div class="tip">
+          Tip: toca el renglón para marcar. Al marcar aparece “magia dorada” ✨
+        </div>
+      </main>
+
+      <aside class="side">
+        <section class="card">
+          <div class="card-head">
+            <h2>📊 Progreso <span class="badge gold" id="countAll">0/0</span></h2>
+            <span class="badge gold" id="percent">0%</span>
+          </div>
+
+          <div class="stats">
+            <div class="row"><span>Marcados</span><strong id="doneText">0</strong></div>
+            <div class="bar"><div id="barFill"></div></div>
+            <div class="row"><span>Pendientes</span><strong id="leftText">0</strong></div>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button id="btnCopyRemaining" title="Copia pendientes al portapapeles">📋 Copiar pendientes</button>
+              <button id="btnCopyAll" title="Copia todo al portapapeles">📋 Copiar todo</button>
+            </div>
+          </div>
+
+          <div class="tip" style="border-top:1px solid rgba(255,255,255,0.10);">
+            Nota: esto es un organizador. Si el médico ajusta dosis/horarios, se actualiza aquí.
+          </div>
+        </section>
+      </aside>
+    </div>
 
     <footer>
       <div>© <span id="year"></span> <span class="gold">Derechos reservados</span></div>
@@ -704,46 +796,469 @@
     </footer>
   </div>
 
+  <div class="toast" id="toast">
+    <span class="dot"></span>
+    <span class="tmsg" id="toastMsg">Guardado</span>
+  </div>
+
   <script>
-    // Guardado simple para no perder marcas (si no quieres, lo quitamos)
-    const STORAGE_KEY = "meds_calendar_letter_v1";
+    // =========================
+    // DATOS (ajústalos si cambia la receta)
+    // =========================
+    const DATA = {
+      daily: {
+        morning: [
+          { id:"amiodarona_am", name:"Amiodarona (½ tableta)", meta:"Mañana" },
+          { id:"rivaroxaban_am", name:"Rivaroxaban 15 mg (½ tableta)", meta:"Mañana" },
+          { id:"acido_folico_am", name:"Ácido fólico", meta:"Mañana" },
+          { id:"zyplo_am_8h", name:"Zyplo 10 ml (cada 8 hrs)", meta:"Mañana (dosis 1)" },
+          { id:"linezolid_am", name:"Linezolid 600 mg (1 tableta)", meta:"Cada 12 hrs • después de comer" }
+        ],
+        afternoon: [
+          { id:"omeprazol_pm", name:"Omeprazol", meta:"Tarde" },
+          { id:"ziplo_5pm", name:"Ziplo 10 ml", meta:"5:00 pm" },
+          { id:"inhalador_6pm", name:"Inhalador", meta:"6:00 pm" }
+        ],
+        night: [
+          { id:"insulina_noc", name:"Insulina", meta:"Noche" },
+          { id:"sulfato_ferroso_noc", name:"Sulfato ferroso", meta:"Noche" },
+          { id:"zyplo_noc_8h", name:"Zyplo 10 ml (cada 8 hrs)", meta:"Noche (dosis 3)" },
+          { id:"linezolid_noc", name:"Linezolid 600 mg (1 tableta)", meta:"Después de cenar" },
+          { id:"ertapenem_iv_noc", name:"Ertapenem IV", meta:"1 vez al día (según receta)" }
+        ]
+      },
+      weekly: [
+        { key:"epo",  label:"Eritropoyetina (L-M-V)", days:{ Mon:true, Wed:true, Fri:true } },
+        { key:"erta", label:"Ertapenem IV (diario)",  days:{ Mon:true, Tue:true, Wed:true, Thu:true, Fri:true, Sat:true, Sun:true } }
+      ]
+    };
+
+    // =========================
+    // STORAGE
+    // =========================
+    const STORAGE_KEY = "cobian_meds_calendar_v2"; // v2 para no romper tu storage anterior
+    const state = loadState();
 
     function loadState(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : { checked: {} };
+        return raw ? JSON.parse(raw) : { checked: {}, lastDailyDate: null };
       }catch(_){
-        return { checked: {} };
+        return { checked: {}, lastDailyDate: null };
       }
     }
+
     function saveState(){
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      try{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        toast("Guardado ✅");
+      }catch(e){
+        console.warn("No se pudo guardar en localStorage:", e);
+        toast("No se pudo guardar ⚠️");
+      }
     }
 
-    const state = loadState();
+    // =========================
+    // REINICIO DIARIO (rutina)
+    // =========================
+    const DAILY_IDS = [
+      ...DATA.daily.morning.map(x=>x.id),
+      ...DATA.daily.afternoon.map(x=>x.id),
+      ...DATA.daily.night.map(x=>x.id),
+    ];
 
-    function bindChecks(){
-      document.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb => {
-        const k = cb.getAttribute("data-key");
-        cb.checked = !!state.checked[k];
+    function ymdLocal(d = new Date()){
+      const y = d.getFullYear();
+      const m = String(d.getMonth()+1).padStart(2,"0");
+      const day = String(d.getDate()).padStart(2,"0");
+      return `${y}-${m}-${day}`;
+    }
 
-        cb.addEventListener("change", () => {
-          state.checked[k] = cb.checked;
-          saveState();
+    function ensureDailyDate(){
+      const today = ymdLocal();
+      if(!state.lastDailyDate){
+        state.lastDailyDate = today;
+        saveState();
+        return;
+      }
+      if(state.lastDailyDate !== today){
+        DAILY_IDS.forEach(id => { delete state.checked[id]; });
+        state.lastDailyDate = today;
+        saveState();
+        toast("Nuevo día: rutina reiniciada ☀️");
+      }
+    }
+
+    // =========================
+    // REINICIO SEMANAL (cada lunes)
+    // =========================
+    function getISOWeekKey(date = new Date()){
+      const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      const dayNum = d.getUTCDay() || 7; // domingo=7
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      const week = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+      return `${d.getUTCFullYear()}-W${String(week).padStart(2, "0")}`;
+    }
+
+    // =========================
+    // HELPERS UI
+    // =========================
+    const elMorning = document.getElementById("listMorning");
+    const elAfternoon = document.getElementById("listAfternoon");
+    const elNight = document.getElementById("listNight");
+    const elWeek = document.getElementById("weekGrid");
+
+    const countDaily = document.getElementById("countDaily");
+    const countWeekly = document.getElementById("countWeekly");
+    const countAll = document.getElementById("countAll");
+    const percent = document.getElementById("percent");
+    const barFill = document.getElementById("barFill");
+    const doneText = document.getElementById("doneText");
+    const leftText = document.getElementById("leftText");
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function itemHtml(item, checked){
+      return `
+        <div class="check" role="checkbox" aria-checked="${checked}" tabindex="0" title="Marcar / desmarcar">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M20 6L9 17l-5-5" stroke="rgba(243,244,247,.95)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="content">
+          <p class="name">${escapeHtml(item.name)}</p>
+          <p class="meta">${escapeHtml(item.meta || "")}</p>
+        </div>
+      `;
+    }
+
+    function renderList(items, mount){
+      mount.innerHTML = "";
+      items.forEach(item => {
+        const checked = !!state.checked[item.id];
+        const el = document.createElement("div");
+        el.className = "item" + (checked ? " done" : "");
+        el.dataset.id = item.id;
+        el.innerHTML = itemHtml(item, checked);
+
+        el.setAttribute("role","button");
+        el.setAttribute("aria-pressed", checked ? "true" : "false");
+        el.setAttribute("tabindex","0");
+
+        el.addEventListener("click", (ev) => {
+          if (window.getSelection && String(window.getSelection()).length > 0) return;
+          const was = !!state.checked[item.id];
+          toggle(item.id);
+          if(!was) magicSpark(el, ev);
+        });
+
+        el.addEventListener("keydown", (ev) => {
+          if(ev.key === "Enter" || ev.key === " "){
+            ev.preventDefault();
+            const was = !!state.checked[item.id];
+            toggle(item.id);
+            if(!was) magicSpark(el, null);
+          }
+        });
+
+        mount.appendChild(el);
+      });
+    }
+
+    function renderWeek(){
+      const weekKey = getISOWeekKey(); // <-- CLAVE: cambia cada lunes
+
+      const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+      const dayLabels = { Mon:"Lunes", Tue:"Martes", Wed:"Miércoles", Thu:"Jueves", Fri:"Viernes", Sat:"Sábado", Sun:"Domingo" };
+
+      elWeek.innerHTML = "";
+
+      const thLeft = document.createElement("div");
+      thLeft.className = "th left";
+      thLeft.textContent = "Bloque";
+      elWeek.appendChild(thLeft);
+
+      days.forEach(d=>{
+        const th = document.createElement("div");
+        th.className = "th";
+        th.textContent = dayLabels[d];
+        elWeek.appendChild(th);
+      });
+
+      DATA.weekly.forEach(row=>{
+        const left = document.createElement("div");
+        left.className = "cell left";
+        left.textContent = row.label;
+        elWeek.appendChild(left);
+
+        days.forEach(d=>{
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          const enabled = !!row.days[d];
+
+          if(!enabled){
+            cell.style.opacity = ".35";
+            cell.textContent = "—";
+            elWeek.appendChild(cell);
+            return;
+          }
+
+          const id = `wk_${weekKey}_${row.key}_${d}`; // <-- CLAVE: incluye semana
+          const checked = !!state.checked[id];
+
+          const btn = document.createElement("button");
+          btn.className = checked ? "btn-gold" : "";
+          btn.textContent = checked ? "✅ Hecho" : "☐ Pendiente";
+
+          btn.addEventListener("click", (ev)=>{
+            const was = !!state.checked[id];
+            toggle(id, {silentRender:true});
+            if(!was) magicSparkCell(cell, ev);
+            render();
+          });
+
+          cell.appendChild(btn);
+          elWeek.appendChild(cell);
         });
       });
     }
 
-    function clearAll(){
-      if(!confirm("¿Seguro que quieres limpiar todas las marcas?")) return;
-      state.checked = {};
+    function toggle(id, {silentRender} = {}){
+      state.checked[id] = !state.checked[id];
       saveState();
-      document.querySelectorAll('input[type="checkbox"][data-key]').forEach(cb => cb.checked = false);
+      if(!silentRender) render();
     }
-    window.clearAll = clearAll;
+
+    function render(){
+      renderList(DATA.daily.morning, elMorning);
+      renderList(DATA.daily.afternoon, elAfternoon);
+      renderList(DATA.daily.night, elNight);
+      renderWeek();
+      updateStats();
+    }
+
+    function updateStats(){
+      const weekKey = getISOWeekKey(); // <-- stats solo de la semana actual
+
+      const dailyAll = [...DATA.daily.morning, ...DATA.daily.afternoon, ...DATA.daily.night];
+      const weeklyAll = [];
+      const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+      DATA.weekly.forEach(r=>{
+        days.forEach(d=>{
+          if(r.days[d]) weeklyAll.push({ id:`wk_${weekKey}_${r.key}_${d}` });
+        });
+      });
+
+      const totalDaily = dailyAll.length;
+      const totalWeekly = weeklyAll.length;
+      const total = totalDaily + totalWeekly;
+
+      const doneDaily = dailyAll.filter(x => !!state.checked[x.id]).length;
+      const doneWeekly = weeklyAll.filter(x => !!state.checked[x.id]).length;
+      const done = doneDaily + doneWeekly;
+
+      countDaily.textContent = `${doneDaily}/${totalDaily}`;
+      countWeekly.textContent = `${doneWeekly}/${totalWeekly}`;
+      countAll.textContent = `${done}/${total}`;
+
+      const p = total ? Math.round((done/total)*100) : 0;
+      percent.textContent = `${p}%`;
+      barFill.style.width = `${p}%`;
+
+      doneText.textContent = String(done);
+      leftText.textContent = String(total - done);
+    }
+
+    function magicSpark(el, ev){
+      const rect = el.getBoundingClientRect();
+      let x = rect.width * 0.22;
+      let y = rect.height * 0.40;
+
+      if (ev && typeof ev.clientX === "number"){
+        x = ev.clientX - rect.left;
+        y = ev.clientY - rect.top;
+      }
+
+      el.style.setProperty("--sx", x + "px");
+      el.style.setProperty("--sy", y + "px");
+
+      el.classList.remove("spark");
+      void el.offsetWidth;
+      el.classList.add("spark");
+
+      const N = 10;
+      for(let i=0;i<N;i++){
+        const p = document.createElement("span");
+        p.className = "sparkle";
+
+        const ang = (Math.PI * 2) * (i / N) + (Math.random() * 0.35);
+        const dist = 30 + Math.random() * 55;
+
+        p.style.setProperty("--x0", `${x}px`);
+        p.style.setProperty("--y0", `${y}px`);
+        p.style.setProperty("--x1", `${x + Math.cos(ang)*dist}px`);
+        p.style.setProperty("--y1", `${y + Math.sin(ang)*dist}px`);
+
+        const size = 4 + Math.random()*5;
+        p.style.width = size + "px";
+        p.style.height = size + "px";
+
+        el.appendChild(p);
+        setTimeout(() => p.remove(), 750);
+      }
+
+      setTimeout(() => el.classList.remove("spark"), 750);
+    }
+
+    function magicSparkCell(cell, ev){
+      const rect = cell.getBoundingClientRect();
+      const x = (ev && ev.clientX) ? ev.clientX - rect.left : rect.width/2;
+      const y = (ev && ev.clientY) ? ev.clientY - rect.top : rect.height/2;
+
+      const N = 10;
+      for(let i=0;i<N;i++){
+        const p = document.createElement("span");
+        p.className = "sparkle";
+
+        const ang = (Math.PI * 2) * (i / N) + (Math.random() * 0.35);
+        const dist = 24 + Math.random() * 45;
+
+        p.style.setProperty("--x0", `${x}px`);
+        p.style.setProperty("--y0", `${y}px`);
+        p.style.setProperty("--x1", `${x + Math.cos(ang)*dist}px`);
+        p.style.setProperty("--y1", `${y + Math.sin(ang)*dist}px`);
+
+        const size = 4 + Math.random()*5;
+        p.style.width = size + "px";
+        p.style.height = size + "px";
+
+        cell.style.position = "relative";
+        cell.style.overflow = "hidden";
+        cell.appendChild(p);
+        setTimeout(() => p.remove(), 750);
+      }
+    }
+
+    // =========================
+    // Acciones
+    // =========================
+    document.getElementById("btnPrint").addEventListener("click", () => {
+      window.print();
+    });
+
+    document.getElementById("btnClear").addEventListener("click", () => {
+      if(!confirm("¿Seguro que quieres limpiar TODO (rutina + semanal)?")) return;
+      state.checked = {};
+      state.lastDailyDate = ymdLocal();
+      saveState();
+      render();
+      toast("Limpio 🧼");
+    });
+
+    document.getElementById("btnMarkToday").addEventListener("click", () => {
+      const dailyAll = [...DATA.daily.morning, ...DATA.daily.afternoon, ...DATA.daily.night];
+      let changed = 0;
+
+      dailyAll.forEach(x => {
+        if(!state.checked[x.id]){
+          state.checked[x.id] = true;
+          changed++;
+        }
+      });
+
+      saveState();
+      render();
+      toast(changed ? `Rutina marcada ✅ (+${changed})` : "Todo ya estaba marcado ✅");
+    });
+
+    document.getElementById("btnCopyAll").addEventListener("click", async () => {
+      const text = buildText({ onlyRemaining:false });
+      await copyToClipboard(text);
+      toast("Copiado 📋");
+    });
+
+    document.getElementById("btnCopyRemaining").addEventListener("click", async () => {
+      const text = buildText({ onlyRemaining:true });
+      await copyToClipboard(text);
+      toast("Pendientes copiados 📋");
+    });
+
+    function buildText({ onlyRemaining }){
+      const weekKey = getISOWeekKey();
+
+      const lines = [];
+      const pushSection = (title, arr) => {
+        const list = onlyRemaining ? arr.filter(x => !state.checked[x.id]) : arr;
+        if(list.length === 0) return;
+        lines.push(title);
+        list.forEach(x => lines.push(`- ${x.name} (${x.meta || ""})`.trim()));
+        lines.push("");
+      };
+
+      pushSection("MAÑANA", DATA.daily.morning);
+      pushSection("TARDE", DATA.daily.afternoon);
+      pushSection("NOCHE", DATA.daily.night);
+
+      const days = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+      const dayLabels = { Mon:"Lunes", Tue:"Martes", Wed:"Miércoles", Thu:"Jueves", Fri:"Viernes", Sat:"Sábado", Sun:"Domingo" };
+
+      lines.push(`SEMANAL (${weekKey})`);
+      DATA.weekly.forEach(r=>{
+        days.forEach(d=>{
+          if(!r.days[d]) return;
+          const id = `wk_${weekKey}_${r.key}_${d}`;
+          const done = !!state.checked[id];
+          if(onlyRemaining && done) return;
+          lines.push(`- ${r.label} • ${dayLabels[d]} • ${done ? "Hecho" : "Pendiente"}`);
+        });
+      });
+
+      return lines.join("\n").trim();
+    }
+
+    async function copyToClipboard(text){
+      try{
+        await navigator.clipboard.writeText(text);
+      }catch(_){
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+      }
+    }
+
+    // =========================
+    // Toast
+    // =========================
+    const toastEl = document.getElementById("toast");
+    const toastMsg = document.getElementById("toastMsg");
+    let toastTimer = null;
+
+    function toast(msg){
+      toastMsg.textContent = msg;
+      toastEl.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1600);
+    }
 
     document.getElementById("year").textContent = new Date().getFullYear();
-    bindChecks();
+
+    // 1) Asegura reinicio diario antes de pintar
+    ensureDailyDate();
+
+    // 2) Render inicial
+    render();
   </script>
 </body>
 </html>
