@@ -359,6 +359,8 @@
       opacity: .28; /* días que NO son hoy */
     }
 
+    .week-cards{ display:none; }
+
     .week-matrix th.is-today{
       outline: 2px solid rgba(214,179,90,0.35);
       outline-offset: -2px;
@@ -371,8 +373,52 @@
     /* móvil: header y celdas más compactas */
     @media (max-width: 820px){
       body{ padding: 14px; }
-      .week-matrix th.sticky-col{ width: 240px; }
-      table.week-matrix{ min-width: 620px; }
+      .table-wrap{ display:none; }
+      .week-cards{
+        display:grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .day-card{
+        border: 1px solid rgba(255,255,255,0.10);
+        border-radius: 16px;
+        background: rgba(0,0,0,0.18);
+        padding: 12px;
+      }
+      .day-card .dh{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.10);
+        margin-bottom: 10px;
+      }
+      .day-card .dh strong{ font-size: 16px; }
+      .day-card .today-pill{
+        font-size: 12px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(214,179,90,0.30);
+        color: rgba(241,211,139,0.95);
+        background: rgba(214,179,90,0.10);
+        display:none;
+      }
+      .day-card.is-today .today-pill{ display:inline-block; }
+      .sec{ margin-top: 10px; }
+      .sec-title{
+        font-weight: 900;
+        color: rgba(241,211,139,0.95);
+        margin-bottom: 6px;
+        font-size: 14px;
+      }
+      .mrow{
+        display:flex;
+        gap:10px;
+        align-items:flex-start;
+        padding: 6px 0;
+      }
+      .mtext{ font-size: 14px; line-height: 1.2; }
     }
 
     footer{
@@ -415,7 +461,7 @@
         background: #f7f7f7 !important;
         color: #333 !important;
       }
-      .badge.gold, .weekview th{
+      .badge.gold, .week-matrix th{
         color: #6a4b00 !important;
         background: #fff7e6 !important;
         border-color: #e7d3a6 !important;
@@ -426,10 +472,9 @@
       }
       .dose .note, footer{ color:#333 !important; }
       .actions{ display:none !important; }
-      .weekly.full-bleed{ width:auto; margin:0; padding:0; }
       .week-cards{ display:none !important; }
       .table-wrap{ display:block !important; }
-      table.weekview{ min-width: 0; width:100%; }
+      table.week-matrix{ min-width: 0; width:100%; }
     }
   </style>
 </head>
@@ -600,13 +645,25 @@
               <input type="checkbox" data-key="epo_mon" />
               <div class="txt">
                 <p class="name">Eritropoyetina</p>
-                <p class="note">Semana actual: marcar SOLO cuando aplique (L-M-V)</p>
+                <p class="note">Lunes (aplicar y marcar)</p>
               </div>
             </div>
 
-            <!-- checkboxes invisibles para guardar EPO por día (M-V) -->
-            <input type="checkbox" data-key="epo_wed" style="display:none" />
-            <input type="checkbox" data-key="epo_fri" style="display:none" />
+            <div class="dose">
+              <input type="checkbox" data-key="epo_wed" />
+              <div class="txt">
+                <p class="name">Eritropoyetina</p>
+                <p class="note">Miércoles (aplicar y marcar)</p>
+              </div>
+            </div>
+
+            <div class="dose">
+              <input type="checkbox" data-key="epo_fri" />
+              <div class="txt">
+                <p class="name">Eritropoyetina</p>
+                <p class="note">Viernes (aplicar y marcar)</p>
+              </div>
+            </div>
 
           </div>
         </div>
@@ -641,6 +698,7 @@
             </tbody>
           </table>
         </div>
+        <div class="week-cards" id="weekCards"></div>
       </div>
     </section>
 
@@ -871,6 +929,77 @@
       // evita que el scroll quede "en sábado/domingo" como en tu captura
       const wrap = document.getElementById("weekWrap");
       if(wrap) wrap.scrollLeft = 0;
+
+      renderWeekCards(today);
+    }
+
+    function renderWeekCards(today){
+      const mount = document.getElementById("weekCards");
+      if(!mount) return;
+
+      const days = ["mon","tue","wed","thu","fri","sat","sun"];
+      const blocks = [
+        { title:"🌤️ Mañana", items: ROUTINE_MAP.morning },
+        { title:"🌇 Tarde",  items: ROUTINE_MAP.afternoon },
+        { title:"🌙 Noche",  items: ROUTINE_MAP.night }
+      ];
+
+      mount.innerHTML = "";
+
+      days.forEach(day => {
+        const isToday = (day === today);
+
+        const card = document.createElement("div");
+        card.className = "day-card" + (isToday ? " is-today" : "");
+
+        let html = `
+          <div class="dh">
+            <strong>${DAY_LABELS[day]}</strong>
+            <span class="today-pill">HOY</span>
+          </div>
+        `;
+
+        blocks.forEach(b => {
+          html += `<div class="sec"><div class="sec-title">${b.title}</div>`;
+          b.items.forEach(it => {
+            const checked = !!state.checked[it.key];
+            const mark = isToday ? (checked ? "✅" : "☐") : "☐";
+            const dim  = isToday ? "" : " style=\"opacity:.35\"";
+            html += `
+              <div class="mrow"${dim}>
+                <span class="wkmark">${mark}</span>
+                <div class="mtext">${it.label}</div>
+              </div>
+            `;
+          });
+          html += `</div>`;
+        });
+
+        // EPO (L-M-V) se refleja por día real, también en móvil
+        html += `<div class="sec"><div class="sec-title">💉 Eritropoyetina</div>`;
+        const epoMap = { mon:"epo_mon", wed:"epo_wed", fri:"epo_fri" };
+        if(epoMap[day]){
+          const k = epoMap[day];
+          const checked = !!state.checked[k];
+          html += `
+            <div class="mrow">
+              <span class="wkmark">${checked ? "✅" : "☐"}</span>
+              <div class="mtext">Aplicada</div>
+            </div>
+          `;
+        }else{
+          html += `
+            <div class="mrow" style="opacity:.35">
+              <span class="wkmark">—</span>
+              <div class="mtext">No aplica</div>
+            </div>
+          `;
+        }
+        html += `</div>`;
+
+        card.innerHTML = html;
+        mount.appendChild(card);
+      });
     }
 
     // =========================
